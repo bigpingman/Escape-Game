@@ -170,13 +170,11 @@ def playGame4():
 
         if gameOver:
             if gamestate == loss:
-                text = "You Lose!"
-                result = 0
+                return 1
             
 
             if (squaresLeft - flagCount) == 0 or squaresLeft == 10:
-                text = "You Win!"
-                result = 1
+                return 0
                 
             screen.fill(WHITE)
             textObject = afont.render(text, True, (0, 0, 0,))

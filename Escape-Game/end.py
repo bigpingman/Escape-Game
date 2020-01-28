@@ -25,12 +25,10 @@ def endScreen(time=300, loser=True):
 
 	#this calls the fixTime function to generate the time value
 	timer=fixTime(time)
-	timer[0]=str(timer[0])
-	timer[1]=str(timer[1])
-	finalTime=(timer[0]+"' "+timer[1]+'"')
-	print (finalTime)
+	
+	
 	screen.blit(background,backgroundRect)
-	text = font.render(finalTime, True, (0,0,0))
+	text = font.render(timer, True, (0,0,0))
 	screen.blit(text,(300,270))
 	pygame.display.flip()
 
@@ -43,13 +41,16 @@ def endScreen(time=300, loser=True):
 		if key[pygame.K_RETURN]==1:
 			sys.exit()
 		
-	#converts from seconds to minutes and seconds
+	#converts from seconds to minutes and seconds into a list
 def fixTime(time):
 	minutes=time/60
 	minutes=int(minutes)
 	seconds=time%60
 	timer=[minutes,seconds]
-	return timer
+	timer[0]=str(timer[0])
+	timer[1]=str(timer[1])
+	finalTime=(timer[0]+"' "+timer[1]+'"')
+	return finalTime
 
 
 

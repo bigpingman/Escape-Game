@@ -256,16 +256,16 @@ def playGame(screen, grid, numTrue):
             return False
     
 
-def level1():
+def level1Pattern():
     
     grid = createGrid(4, 4, 4)
     state = 0    
     gameOver = False
     failsCounter = 0
     won = False
-    loseT = False
+    quitGame = False
 
-    while True:
+    while quitGame == False:
         drawTopBar(screen, 0)
         pygame.display.update()
 
@@ -342,14 +342,21 @@ def level1():
             
             gameOver = True
 
-def level2():
+        # return statements: 0 if won, 1 if lost, 2 if exited (back button)
+        if (won == False and backClicked == True):
+            return 2
+        elif (won == False and backClicked == False):
+            return 1
+        else:
+            return 0
+
+def level2Pattern():
     
     grid = createGrid(4, 4, 6)
     state = 0    
     gameOver = False
     failsCounter = 0
     won = False
-    loseT = False
 
     while True:
         drawTopBar(screen, 0)
@@ -428,4 +435,4 @@ def level2():
             
             gameOver = True
 
-level1() #add conditional to determine whether to call level 1 or 2!!!!!!
+level1Pattern() #add conditional to determine whether to call level 1 or 2!!!!!!

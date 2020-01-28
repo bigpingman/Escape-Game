@@ -8,17 +8,23 @@ import sys as s
 import random as r
 import turtle as t
 import pygame as pygame
-from all_levels.Matching.main import*
+# from all_levels.Matching.main import*
 # from all_levels.level2.memory import*
-from all_levels.Minesweeper.main import*
+# from all_levels.Minesweeper.main import*
 # from all_levels.Pattern.main import*
 # from start import startdisp
+
+from all_levels.Matching.main import playMatch
 
 from common import*
 
 import pygame as py
 import random as r
 
+# some constants (plz move)
+WON_GAME = 0
+LOST_GAME = 1
+EXITED_GAME = 2
 
 # DavisAfterDark is the main game state object
 # oh hail the God object pattern (DONT ever do this in production)
@@ -36,8 +42,11 @@ class DavisAfterDark:
         # background asset
         self.screenAssets["background"] = py.image.load("./assets/Enviroment.png").convert_alpha()
         self.screenAssets["Start Screen"] = py.image.load("./assets/startscreen1.png").convert_alpha()
+        self.screenAssets["Tutorial Screen"] = py.image.load("./assets/Tutorialslide.png").convert_alpha()
+        self.screenAssets["Win Screen"] = py.image.load("./assets/End1.png").convert_alpha()
+        self.screenAssets["Lose Screen"] = py.image.load("./assets/End2.png").convert_alpha()
+        self.screenAssets["Credits Screen"] = py.image.load("./assets/credits.png").convert_alpha()
 
-        
         # player asset
         player = py.image.load("./assets/MainSpriteWalking1.png").convert_alpha()
         player = py.transform.scale(player,(10,20))
@@ -123,7 +132,7 @@ class DavisAfterDark:
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
         #top bar with 30 mins timer
-        drawTopBar(screen, 1800)
+        drawTopBar(self.screen, 1800)
         
         py.display.update()
     
@@ -131,38 +140,68 @@ class DavisAfterDark:
     def drawStartScreen(self): 
         self.screen.blit(self.screenAssets["Start Screen"], (0, 0))
         py.display.update()
+    
+    def drawTutorial(self):
+        self.screen.blit(self.screenAssets["Tutorial Screen"], (0, 0))
+        py.display.update()
+
+    def drawCredits(self): 
+        self.screen.blit(self.screenAssets["Credits Screen"], (0, 0))
+        py.display.update()
 
     def drawWinScreen(self):
-        # code here
-        return
+        self.screen.blit(self.screenAssets["Win Screen"], (0, 0))
+        py.display.update()
 
     def drawLoseScreen(self):
-        # code here
-        return
+        self.screen.blit(self.screenAssets["Lose Screen"], (0, 0))
+        py.display.update()
 
     def playPatternGame(self):
-        # code here
-        return
+        result = level1Pattern()
+
+        # 0 : win | 1 : lose | 2 : quit
+        if result == 0:
+            return WON_GAME
+        elif result == 1:
+            return LOST_GAME
+        else:
+            return EXITED_GAME
 
     def playStarGame(self):
-        # code here
-        return
+        result = starGameMain()
+        
+        # 0 : win | 1 : lose | 2 : quit
+        if result == 0:
+            return WON_GAME
+        elif result == 1:
+            return LOST_GAME
+        else:
+            return EXITED_GAME
         
     def playMinesweeperGame(self):
-        # code here
-        return
+        # 0 : win | 1 : lose | 2 : quit
+        if result == 0:
+            return WON_GAME
+        elif result == 1:
+            return LOST_GAME
+        else:
+            return EXITED_GAME
 
     def playMatchingGame(self):
-        #code here
-        return
+        result = playMatch()
+
+        # 0 : win | 1 : lose | 2 : quit
+        if result == 0:
+            return WON_GAME
+        elif result == 1:
+            return LOST_GAME
+        else:
+            return EXITED_GAME
     
     def playHighwayGame(self):
-        #code here
-        return
-
-    def drawTutorial(self): 
-        
-        return 
+        timeToDeduct = highwayMain() 
+        return timeToDeduct
 
     def start(self):
         while True:
@@ -187,7 +226,7 @@ class DavisAfterDark:
                                 self.gamestate = 9 
 
                 # STATE 1 : MAIN HUB
-                if self.gamestate == 1:
+                elif self.gamestate == 1:
                     self.drawBackground(self.playerpos)
                     self.controls()
                     keys = py.key.get_pressed()
@@ -215,27 +254,29 @@ class DavisAfterDark:
                         self.playercolor = (0,255,0)
 
                 # STATE 2 : PATTERN
-                if self.gamestate == 2:
+                elif self.gamestate == 2:
                     self.playPatternGame()
 
                 # STATE 3 : MINESWEEPER
-                if self.gamestate == 3:
+                elif self.gamestate == 3:
                     self.playMinesweeperGame()
                     
                 # STATE 4 : STAR GAME
-                if self.gamestate == 4:
+                elif self.gamestate == 4:
                     self.playStarGame()
 
                 # STATE 5 : MATCHING
-                if self.gamestate == 5:
+                elif self.gamestate == 5:
                     self.playMatchingGame()
+                    self.gamestate = 1
                     
                 # STATE 6 : HIGHWAY
-                if self.gamestate == 6:
+                elif self.gamestate == 6:
                     self.playHighwayGame()
                 
-                if self.gamestate == 7:
-                    self.playHighwayGame()
+                # STATE 7 : TUTORIAL
+                elif self.gamestate == 7:
+                    self.drawTutorial()
             
             #GAME OVER LOOP -- END SCREENS
             while self.gamestate > 100:
@@ -245,7 +286,7 @@ class DavisAfterDark:
                     self.drawWinScreen()
 
                 # STATE 102 : END SCREEN LOSE
-                if self.gamestate == 102:
+                elif self.gamestate == 102:
                     self.drawLoseScreen()
         
 

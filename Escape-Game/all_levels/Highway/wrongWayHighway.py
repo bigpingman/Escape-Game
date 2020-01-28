@@ -2,13 +2,13 @@ import time
 import sys, pygame
 import random
 
-def startScreen(time=300,harder=False): #setting harder to true makes the cars move faster
+def highwayMain(time=300,harder=False): #setting harder to true makes the cars move faster
 
 #sets the screen dimensions and colors
 	size=width,height=720,720
 	notReady=True
 	frame=0
-	background=pygame.image.load("wrongWayInstructions.png")
+	background=pygame.image.load("./assets/wrongWayInstructions.png")
 	backgroundRect=background.get_rect()
 	screen=pygame.display.set_mode(size)
 	black=(0,0,0)
@@ -29,8 +29,9 @@ def startScreen(time=300,harder=False): #setting harder to true makes the cars m
 			notReady=False
 
 	#returns the final time
-	finalTime=main(time,harder)
-	return finalTime
+	timesHit=main(time,harder)
+	print(timesHit)
+	return timesHit
 
 	#main game function
 	#has a variable if you want to make the game harder
@@ -42,10 +43,10 @@ def main(time=300,harder=False):
 		speed=15
 	#sets the background and loads the images	
 	start=-1000
-	background= pygame.image.load("road1.png")
+	background= pygame.image.load("./assets/road1.png")
 	backgroundRect=background.get_rect()
 	green=(35, 125, 34)
-	car= pygame.image.load("car.png")
+	car= pygame.image.load("./assets/car.png")
 	carHit=car.get_rect()
 	pygame.init()
 	size=width,height=720,720
@@ -93,22 +94,22 @@ def main(time=300,harder=False):
 	while gameOver==False:
 
 		#this updates the timer every fourty frames
-		if frame%40==0 or frame==1:
+		'''if frame%40==0 or frame==1:
 			time-=1
 			timer=fixTime(time)
 			timer[0]=str(timer[0])
 			timer[1]=str(timer[1])
 			temporary=(timer[0]+"' "+timer[1]+'"')
-		text = font.render(temporary, True, (color))
+		text = font.render(temporary, True, (color))'''
 		
 		#this changes the background every 8 frames so it looks like its moving
 		if frame%8==0:
 			if background1==True:
-				background= pygame.image.load("road2.png")
+				background= pygame.image.load("./assets/road2.png")
 				backgroundRect=background.get_rect()
 				background1=False
 			else:
-				background= pygame.image.load("road1.png")
+				background= pygame.image.load("./assets/road1.png")
 				backgroundRect=background.get_rect()
 				background1=True
 
@@ -127,7 +128,7 @@ def main(time=300,harder=False):
 
 		screen.blit(background,backgroundRect)
 		screen.blit(car,carHit)
-		screen.blit(text,(0,0))
+		#screen.blit(text,(0,0))
 		pygame.time.Clock().tick(60)
 
 		#main controls
@@ -150,7 +151,7 @@ def main(time=300,harder=False):
 		#spawns a car after a set time
 		if frame%delay==0:
 			#print(num)
-			enemy.append(pygame.image.load("enemy.png"))
+			enemy.append(pygame.image.load("./assets/enemy.png"))
 			enemyHit.append(0)
 			enemyHit[num]=enemy[0].get_rect()
 			enemyHit[num]=enemyHit[num].move(carSpawns[num],-50)
@@ -174,8 +175,8 @@ def main(time=300,harder=False):
 		if collide(carHit,enemyHit,invincible)==True:
 			start=frame
 			invincible=True
-			car=pygame.image.load("blank.png")
-			pygame.mixer.music.load('hit.wav')
+			car=pygame.image.load("./assets/blank.png")
+			pygame.mixer.music.load('./music/hit.wav')
 			pygame.mixer.music.play(0)
 			timesHit+=1
 			time-=5
@@ -184,20 +185,20 @@ def main(time=300,harder=False):
 		#the car hit animation where it just flashes on and off twice
 		#you get a few I frames too
 		if frame==start+10:
-			car=pygame.image.load("car.png")
+			car=pygame.image.load("./assets/car.png")
 
 		if frame==start+20:
-			car=pygame.image.load("blank.png")
+			car=pygame.image.load("./assets/blank.png")
 
 		if frame==start+30:
-			car=pygame.image.load("car.png")
+			car=pygame.image.load("./assets/car.png")
 			invincible=False
 			color=(0,0,0)
 
 
 		frame+=1
 
-	return time
+	return timesHit
 	#print(timesHit)
 
 	#the timer function
@@ -231,7 +232,7 @@ def collide(carHit,enemyHit,invincible):
 
 
 if __name__ == "__main__":
-	time=startScreen(300)
+	time=highwayMain(300)
     
     
     

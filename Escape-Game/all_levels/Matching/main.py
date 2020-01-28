@@ -88,7 +88,7 @@ def handleClick(cards, rawCards, board, cardWidth, cardHeight, currentlySelected
                     board[i][j] *= -1
                     # can return early because can only click in one place at time
                     return [board, card]
-
+    
     return [board, None]
 
 def playMatch():
@@ -109,8 +109,6 @@ def playMatch():
 
     # begin main loop
     while True:
-
-
         if state == STATE_FIRST_DRAW:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -192,7 +190,7 @@ def playMatch():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    return 0
             if delayTicker == 30:
                 r.game1ready = False
 
@@ -210,9 +208,9 @@ def playMatch():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit()
+                    return 1
             if delayTicker == 30:
-                sys.exit()
+                return 1
 
         if state != 5 and state != 6:
             # update time
