@@ -14,7 +14,7 @@ from all_levels.Minesweeper.main import*
 # from all_levels.Pattern.main import*
 # from start import startdisp
 
-from common import initScreenAndGameClock, drawTopBar
+from common import*
 
 import pygame as py
 import random as r
@@ -53,36 +53,50 @@ class DavisAfterDark:
             4 - star game
             5 - matching
             6 - wrong way highway
-            7 - End Screen Win
-            8 - End Screen Lose
+            7 - Tutorial Screen 
+            8 - Story 
+            9 - Credits
+            101 - End Screen Win
+            102 - End Screen Lose
         """
         self.gamestate = 0
         self.game1ready = False
         self.game2ready = False
         self.game3ready = False
         self.gametype = 0
-        self.re = 140
-        self.psize = 50
-        self.g = 200
+        
         self.gamesleft = 3
         self.clock = py.time.Clock()
+        self.gameover = False
+
+        #colors
+        self.re = 140
+        self.g = 200
         self.b = 17
+        self.brown = (150,75,0)
         self.playercolor  = (self.re,self.g,self.b)
+        
+        #player pos
         self.playerX = 200
         self.playerY = 600
-        self.memH = 70
-        self.memW = 100
         self.playerpos = [self.playerX,self.playerY]
-        self.width = 720
-        self.height = 720
-        self.screen = py.display.set_mode((self.width,self.height))
-        self.gameover = False
-        self.brown = (150,75,0)
-        self.memX = 0
-        self. memY = 500
+        
+        self.psize = 50 #player size?
+
         # player dimensions
         self.ph = 157
         self.pw = 64
+        
+        #screen dimensions
+        self.width = 720
+        self.height = 720
+        self.screen = py.display.set_mode((self.width,self.height))
+        
+        #memory game
+        self.memX = 0
+        self.memY = 500
+        self.memH = 70
+        self.memW = 100
 
 
     def drawBackground(self, playerpos):
@@ -108,77 +122,132 @@ class DavisAfterDark:
         py.draw.rect(self.screen, self.playercolor, (playerpos[0], playerpos[1] - 20, 12, 24))
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
-        #top bar with 3
+        #top bar with 30 mins timer
         drawTopBar(screen, 1800)
-        
         
         py.display.update()
     
     #Draws the start screen 
     def drawStartScreen(self): 
         self.screen.blit(self.screenAssets["Start Screen"], (0, 0))
+        py.display.update()
+
+    def drawWinScreen(self):
+        # code here
+        return
+
+    def drawLoseScreen(self):
+        # code here
+        return
+
+    def playPatternGame(self):
+        # code here
+        return
+
+    def playStarGame(self):
+        # code here
+        return
+        
+    def playMinesweeperGame(self):
+        # code here
+        return
+
+    def playMatchingGame(self):
+        #code here
+        return
+    
+    def playHighwayGame(self):
+        #code here
+        return
+
+    def drawTutorial(self): 
+        
+        return 
 
     def start(self):
-        # while self.gamestate == 0: 
-            # self.drawStartScreen()
+        while True:
 
-        while not self.gameover:
-            self.drawBackground(self.playerpos)
-            grem = 3
+            #GAME LOOP -- GAME NOT OVER
+            while self.gamestate < 100:
+                
+                # STATE 0 : START
+                if self.gamestate == 0:
+                    self.drawStartScreen()
+                    for event in py.event.get():
+                        if event.type == py.QUIT:
+                            sys.exit()
+                        elif event.type == py.KEYDOWN:
+                            if event.key == py.K_RETURN:
+                                self.gamestate = 1 
+                            elif event.key == py.K_t: 
+                                self.gamestate = 7
+                            elif event.key == py.K_s: 
+                                self.gamestate = 8
+                            elif event.key == py.K_c: 
+                                self.gamestate = 9 
 
-            keys = py.key.get_pressed()
-            self.screen.fill(self.brown)
-            self.controls()
+                # STATE 1 : MAIN HUB
+                if self.gamestate == 1:
+                    self.drawBackground(self.playerpos)
+                    self.controls()
+                    keys = py.key.get_pressed()
 
+                    # step on matching game
+                    if self.collision(self.playerpos, self.memX, self.memY, 64, 157):
+                        self.playercolor = (255,0,0)
+                        if keys[py.K_n]:
+                            self.gamestate = 5
 
-            if self.collision(self.playerpos, self.memX, self.memY, 64, 157):
-                self.playercolor = (255,0,0)
-                self.game1ready = True
+                    # step on minesweeper
+                    elif self.collision(self.playerpos, 575, 575, 100, 100):
+                        self.playercolor = (255,0,0)
+                        if keys[py.K_n]:
+                            self.gamestate = 3
 
-                if self.game1ready:
-                    if keys[py.K_n]:
-                        playMatch()
+                    # step on pattern game
+                    elif self.collision(self.playerpos, 550, 100, 100, 60):
+                        self.playercolor = (255,0,0)
+                        if keys[py.K_n]:
+                            self.gamestate = 2
 
+                    # otherwise no stepping on anything
+                    else:
+                        self.playercolor = (0,255,0)
 
+                # STATE 2 : PATTERN
+                if self.gamestate == 2:
+                    self.playPatternGame()
+
+                # STATE 3 : MINESWEEPER
+                if self.gamestate == 3:
+                    self.playMinesweeperGame()
+                    
+                # STATE 4 : STAR GAME
+                if self.gamestate == 4:
+                    self.playStarGame()
+
+                # STATE 5 : MATCHING
+                if self.gamestate == 5:
+                    self.playMatchingGame()
+                    
+                # STATE 6 : HIGHWAY
+                if self.gamestate == 6:
+                    self.playHighwayGame()
+                
+                if self.gamestate == 7:
+                    self.playHighwayGame()
             
-            else:
-                self.game1ready = False
+            #GAME OVER LOOP -- END SCREENS
+            while self.gamestate > 100:
+                
+                # STATE 101 : END SCREEN WIN
+                if self.gamestate == 101:
+                    self.drawWinScreen()
 
-            if self.collision(self.playerpos, 575, 575, 100, 100):
-                self.playercolor = (255,0,0)    
-                self.game2ready = True
-
-                if self.game2ready:
-                    if keys[py.K_n]:
-                        playGame4()
-                        if self.result == 0:
-                            print("loser!")
-
-                        if self.result == 1:
-                            print("winner!")
-
-                        else:
-                            self.result = 2
-                            
-
-            else:
-                self.game2ready = False
-
-
-            if self.collision(self.playerpos, 550, 100, 100, 60):
-                playercolor = (255,0,0)    
-                self.game3ready = True
-
-                if self.game3ready:
-                    if keys[py.K_n]:
-                        gameLoop()
-            
-            else: 
-                self.game3ready = False
-
-            
-            
-
+                # STATE 102 : END SCREEN LOSE
+                if self.gamestate == 102:
+                    self.drawLoseScreen()
+        
 
     def controls(self):
         # py.mixer.music.load("./music/Step.wav")
