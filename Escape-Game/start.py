@@ -16,7 +16,7 @@ def startdisp():
 
         
         if keys[py.K_t]:
-            print("talk to dese niggas fr!!!")
+            print("llo.,olol!")
             break
 
         if keys[py.K_c]:
