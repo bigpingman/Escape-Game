@@ -69,13 +69,10 @@ class DavisAfterDark:
             102 - End Screen Lose
         """
         self.gamestate = 0
-        self.game1ready = False
-        self.game2ready = False
-        self.game3ready = False
-        self.gametype = 0
         
         self.gamesleft = 3
         self.clock = py.time.Clock()
+        self.clockInitialized = False
         self.gameover = False
 
         #colors
@@ -90,7 +87,7 @@ class DavisAfterDark:
         self.playerY = 600
         self.playerpos = [self.playerX,self.playerY]
         
-        self.psize = 50 #player size?
+        self.psize = 50 #player size
 
         # player dimensions
         self.ph = 157
@@ -136,7 +133,6 @@ class DavisAfterDark:
         
         py.display.update()
     
-    #Draws the start screen 
     def drawStartScreen(self): 
         self.screen.blit(self.screenAssets["Start Screen"], (0, 0))
         py.display.update()
@@ -144,7 +140,7 @@ class DavisAfterDark:
     def drawTutorial(self):
         self.screen.blit(self.screenAssets["Tutorial Screen"], (0, 0))
         py.display.update()
-
+    
     def drawCredits(self): 
         self.screen.blit(self.screenAssets["Credits Screen"], (0, 0))
         py.display.update()
@@ -158,6 +154,7 @@ class DavisAfterDark:
         py.display.update()
 
     def playPatternGame(self):
+        
         result = level1Pattern()
 
         # 0 : win | 1 : lose | 2 : quit
@@ -180,6 +177,8 @@ class DavisAfterDark:
             return EXITED_GAME
         
     def playMinesweeperGame(self):
+        result = playGame4() 
+
         # 0 : win | 1 : lose | 2 : quit
         if result == 0:
             return WON_GAME
@@ -200,8 +199,8 @@ class DavisAfterDark:
             return EXITED_GAME
     
     def playHighwayGame(self):
-        timeToDeduct = highwayMain() 
-        return timeToDeduct
+        timeToDeduct = highwayMain() #time to be deducted from the overall game clock
+        return timeToDeduct 
 
     def start(self):
         while True:
@@ -212,12 +211,13 @@ class DavisAfterDark:
                 # STATE 0 : START
                 if self.gamestate == 0:
                     self.drawStartScreen()
-                    for event in py.event.get():
+                    for event in pygame.event.get():
                         if event.type == py.QUIT:
                             sys.exit()
                         elif event.type == py.KEYDOWN:
                             if event.key == py.K_RETURN:
                                 self.gamestate = 1 
+                                self.clockInitialized = True
                             elif event.key == py.K_t: 
                                 self.gamestate = 7
                             elif event.key == py.K_s: 
@@ -227,9 +227,14 @@ class DavisAfterDark:
 
                 # STATE 1 : MAIN HUB
                 elif self.gamestate == 1:
+                    py.display.set_caption("Davis After Dark")
                     self.drawBackground(self.playerpos)
                     self.controls()
                     keys = py.key.get_pressed()
+
+                    # if self.clockInitialized == True:
+                        
+
 
                     # step on matching game
                     if self.collision(self.playerpos, self.memX, self.memY, 64, 157):
@@ -255,28 +260,53 @@ class DavisAfterDark:
 
                 # STATE 2 : PATTERN
                 elif self.gamestate == 2:
+                    py.display.set_caption("Memory Pattern")
                     self.playPatternGame()
 
                 # STATE 3 : MINESWEEPER
                 elif self.gamestate == 3:
+                    py.display.set_caption("Nuestro Sweeper")
                     self.playMinesweeperGame()
                     
                 # STATE 4 : STAR GAME
                 elif self.gamestate == 4:
+                    py.display.set_caption("Star Game")
                     self.playStarGame()
 
                 # STATE 5 : MATCHING
                 elif self.gamestate == 5:
+                    py.display.set_caption("Matching Game")
                     self.playMatchingGame()
                     self.gamestate = 1
                     
                 # STATE 6 : HIGHWAY
                 elif self.gamestate == 6:
+                    py.display.set_caption("Wrong Way Highway")
                     self.playHighwayGame()
                 
                 # STATE 7 : TUTORIAL
                 elif self.gamestate == 7:
+                    py.display.set_caption("Davis After Dark")
                     self.drawTutorial()
+                    for event in py.event.get():
+                        if event.key == py.K_BACKSPACE: 
+                            self.gamestate = 0 
+
+                # STATE 8 : STORY
+                elif self.gamestate == 8:
+                    py.display.set_caption("Davis After Dark")
+                    print("Story be drawn")
+                    for event in py.event.get():
+                        if event.key == py.K_BACKSPACE: 
+                            self.gamestate = 0 
+
+                # STATE 9 : CREDITS
+                elif self.gamestate == 9:
+                    py.display.set_caption("Davis After Dark")
+                    self.drawCredits()
+                    for event in py.event.get():
+                        if event.key == py.K_BACKSPACE: 
+                            self.gamestate = 0 
             
             #GAME OVER LOOP -- END SCREENS
             while self.gamestate > 100:
@@ -297,23 +327,31 @@ class DavisAfterDark:
             if event.type == py.QUIT:
                 s.exit()
 
+
+            # mouse clicks on back button
+            [mouseX, mouseY] = pygame.mouse.get_pos()
+            if mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.gamestate = 0
+
         x = self.playerpos[0]
         y = self.playerpos[1]
-        if keys[py.K_a]:
-            # py.mixer.music.play(1)
-            x -= 1
 
-        if keys[py.K_d]:
+        if keys[py.K_a]: # move left
             # py.mixer.music.play(1)
-            x += 1
+            x -= 0.5
 
-        if keys[py.K_s]:
+        if keys[py.K_d]: # move right
             # py.mixer.music.play(1)
-            y += 1
+            x += 0.5
 
-        if keys[py.K_w]:
+        if keys[py.K_s]: # move down
             # py.mixer.music.play(1)
-            y -= 1
+            y += 0.5
+
+        if keys[py.K_w]: # move up
+            # py.mixer.music.play(1)
+            y -= 0.5
 
         if keys[py.K_p]:
             s.exit()
@@ -333,6 +371,9 @@ class DavisAfterDark:
 
         if self.playerpos[1] < 0 + 20:
             self.playerpos[1] = 20
+
+
+         
 
     def collision(self, playerpos, oX, oY, oW, oH):
         pX = playerpos[0]

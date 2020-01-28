@@ -141,7 +141,7 @@ def main(time=300,harder=False):
 		if key[pygame.K_p]==1:
 			sys.exit()
 
-		#makes sure the car doesnt hit the end
+		#makes sure the car doesnt hit the edges of the screen
 		if carHit.left<120:
 			carHit=carHit.move(15,0)
 		if carHit.right>width-120:

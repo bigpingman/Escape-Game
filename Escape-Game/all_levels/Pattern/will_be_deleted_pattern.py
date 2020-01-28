@@ -1,7 +1,7 @@
 import pygame
 import random
 import time
-from common import initScreenAndGameClock, drawTopBar
+from ./common import initScreenAndGameClock, drawTopBar
 
 ''' 
 Pattern game with a n x m grid in which the player must recreate a pattern in
@@ -26,7 +26,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_X, SCREEN_Y))
 
 #background
-sky = pygame.image.load("sky.png")
+sky = pygame.image.load("./assets/sky.png")
 screen.blit(sky, (0,0))
 
 #Initializes the grid with x number of TRUE squares assigned to random positions
@@ -259,11 +259,11 @@ def playGame(screen, grid, numTrue):
 def level1Pattern():
     
     grid = createGrid(4, 4, 4)
-    state = 0    
     gameOver = False
     failsCounter = 0
     won = False
     quitGame = False
+    backClicked = False
 
     while quitGame == False:
         drawTopBar(screen, 0)
@@ -279,6 +279,14 @@ def level1Pattern():
             for event in pygame.event.get(20):
                 if event.type == pygame.QUIT:
                     exit()
+                
+                #checks for back button
+                mouseX, mouseY = pygame.mouse.get_pos()
+
+                if mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70: 
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        backClicked = True
+                        return 2
         
         #returns to blank grid
         screen.blit(sky, (0,0))
@@ -317,6 +325,14 @@ def level1Pattern():
                             for event in pygame.event.get(20):
                                 if event.type == pygame.QUIT:
                                     exit()
+                                
+                                #checks for back button
+                                mouseX, mouseY = pygame.mouse.get_pos()
+
+                                if mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70: 
+                                    if event.type == pygame.MOUSEBUTTONDOWN:
+                                        backClicked = True
+                                        return 2
                         
                         #redraws blank grid
                         screen.blit(sky, (0,0))
@@ -343,17 +359,16 @@ def level1Pattern():
             gameOver = True
 
         # return statements: 0 if won, 1 if lost, 2 if exited (back button)
-        if (won == False and backClicked == True):
-            return 2
+        if (won == True and backClicked == False):
+            return 0
         elif (won == False and backClicked == False):
             return 1
         else:
-            return 0
+            return 2
 
 def level2Pattern():
     
     grid = createGrid(4, 4, 6)
-    state = 0    
     gameOver = False
     failsCounter = 0
     won = False
