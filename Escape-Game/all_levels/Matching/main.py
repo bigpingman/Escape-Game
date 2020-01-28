@@ -1,12 +1,12 @@
 import pygame, sys
-from all_levels.level1.common import initScreenAndGameClock, drawTopBar
-from all_levels.level1.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOARD_N, TOPBAR_RATIO, CARD_SPACING, WHITE
+from all_levels.Matching.common import initScreenAndGameClock, drawTopBar
+from all_levels.Matching.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOARD_N, TOPBAR_RATIO, CARD_SPACING, WHITE
 # import Room as r
 
 # initialize basic elements
 [screen, gameClock] = initScreenAndGameClock()
 afont = pygame.font.SysFont("Helvetica", 30, bold=False)
-from all_levels.level1.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS
+from all_levels.Matching.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS
 
 def drawTable(screen, area):
     [areax, areay] = area

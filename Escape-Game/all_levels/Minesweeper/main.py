@@ -1,13 +1,13 @@
 import pygame, sys
-from all_levels.level4.common import initScreenAndGameClock, drawTopBar, hashRect
-from all_levels.level4.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOARD_N, TOPBAR_RATIO, SQUARE_SPACING, WHITE
-from all_levels.level4.minesweeper import generateBoard, getNeighbors
+from all_levels.Minesweeper.common import initScreenAndGameClock, drawTopBar, hashRect
+from all_levels.Minesweeper.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOARD_N, TOPBAR_RATIO, SQUARE_SPACING, WHITE
+from all_levels.Minesweeper.minesweeper import generateBoard, getNeighbors
 
 # initialize basic elements
 [screen, gameClock] = initScreenAndGameClock()
 afont = pygame.font.SysFont("Helvetica", 30, bold=False)
-flag = pygame.image.load("./all_levels/level4/assets/flag.png").convert_alpha()
-bomb = pygame.image.load("./all_levels/level4/assets/bomb.png").convert_alpha()
+flag = pygame.image.load("./all_levels/Minesweeper/assets/flag.png").convert_alpha()
+bomb = pygame.image.load("./all_levels/Minesweeper/assets/bomb.png").convert_alpha()
 
 def drawTable(screen, area):
     [areax, areay] = area

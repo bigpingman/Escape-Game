@@ -8,11 +8,13 @@ import sys as s
 import random as r
 import turtle as t
 import pygame as pygame
-from all_levels.level1.main import*
+from all_levels.Matching.main import*
 # from all_levels.level2.memory import*
-from all_levels.level4.main import*
-from all_levels.level5.starGame import*
+from all_levels.Minesweeper.main import*
+# from all_levels.Pattern.main import*
 # from start import startdisp
+
+from common import initScreenAndGameClock, drawTopBar
 
 import pygame as py
 import random as r
@@ -33,6 +35,8 @@ class DavisAfterDark:
         
         # background asset
         self.screenAssets["background"] = py.image.load("./assets/Enviroment.png").convert_alpha()
+        self.screenAssets["Start Screen"] = py.image.load("./assets/startscreen1.png").convert_alpha()
+
         
         # player asset
         player = py.image.load("./assets/MainSpriteWalking1.png").convert_alpha()
@@ -40,7 +44,19 @@ class DavisAfterDark:
         self.screenAssets["player"] = player
 
         # ---------------------- GLOBALS ----------------------------- #
-        self.gamestate = 1
+        """
+           State
+            0 - start
+            1 - main hub
+            2 - pattern
+            3 - minesweeper
+            4 - star game
+            5 - matching
+            6 - wrong way highway
+            7 - End Screen Win
+            8 - End Screen Lose
+        """
+        self.gamestate = 0
         self.game1ready = False
         self.game2ready = False
         self.game3ready = False
@@ -69,7 +85,6 @@ class DavisAfterDark:
         self.pw = 64
 
 
-
     def drawBackground(self, playerpos):
         # background
         self.screen.blit(self.screenAssets["background"], (0, 0))
@@ -93,10 +108,20 @@ class DavisAfterDark:
         py.draw.rect(self.screen, self.playercolor, (playerpos[0], playerpos[1] - 20, 12, 24))
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
+        #top bar with 3
+        drawTopBar(screen, 1800)
+        
         
         py.display.update()
+    
+    #Draws the start screen 
+    def drawStartScreen(self): 
+        self.screen.blit(self.screenAssets["Start Screen"], (0, 0))
 
     def start(self):
+        # while self.gamestate == 0: 
+            # self.drawStartScreen()
+
         while not self.gameover:
             self.drawBackground(self.playerpos)
             grem = 3
@@ -166,19 +191,19 @@ class DavisAfterDark:
         y = self.playerpos[1]
         if keys[py.K_a]:
             # py.mixer.music.play(1)
-            x -= 10
+            x -= 1
 
         if keys[py.K_d]:
             # py.mixer.music.play(1)
-            x += 10
+            x += 1
 
         if keys[py.K_s]:
             # py.mixer.music.play(1)
-            y += 10
+            y += 1
 
         if keys[py.K_w]:
             # py.mixer.music.play(1)
-            y -= 10
+            y -= 1
 
         if keys[py.K_p]:
             s.exit()
@@ -187,17 +212,17 @@ class DavisAfterDark:
 
         # collision data
 
-        if 0 > self.playerpos[0]:
+        if 0 > self.playerpos[0] + 2:
             self.playerpos[0] = 2
 
-        if self.playerpos[0] > self.width - 50:
-            self.playerpos[0] = self.width - 52
+        if self.playerpos[0] > self.width - 10:
+            self.playerpos[0] = self.width - 10
 
-        if self.playerpos[1] > self.height - 50:
-            self.playerpos[1] = self.height - 52
+        if self.playerpos[1] > self.height - 10:
+            self.playerpos[1] = self.height - 10
 
-        if self.playerpos[1] < 0:
-            self.playerpos[1] = 2
+        if self.playerpos[1] < 0 + 20:
+            self.playerpos[1] = 20
 
     def collision(self, playerpos, oX, oY, oW, oH):
         pX = playerpos[0]

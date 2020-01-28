@@ -1,5 +1,5 @@
 import pygame, sys
-from all_levels.level4.constant import X_DIMENSION, Y_DIMENSION, TOPBAR_RATIO, CLOCK_BORDER, CLOCK_SPACING, WHITE, BLACK
+from all_levels.Minesweeper.constant import X_DIMENSION, Y_DIMENSION, TOPBAR_RATIO, CLOCK_BORDER, CLOCK_SPACING, WHITE, BLACK
 
 def initScreenAndGameClock():
     # initialize pygame
