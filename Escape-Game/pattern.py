@@ -461,4 +461,4 @@ def level2Pattern():
         else:
             return 2
 
-level1Pattern() #add conditional to determine whether to call level 1 or 2!!!!!!
+# level1Pattern() #add conditional to determine whether to call level 1 or 2!!!!!!

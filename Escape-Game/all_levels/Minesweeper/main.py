@@ -118,6 +118,12 @@ def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLe
                 # can return early because can only click in one place at time
                 return [board, isBomb, squaresLeft - count, flagCount]
 
+        elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
+            for event in py.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    return [None, None, None, None]
+
+
     return [board, False, squaresLeft, flagCount]
 
 def playGame4():
@@ -143,9 +149,12 @@ def playGame4():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                     [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount)
+                    if board == None and isBomb == None and squaresLeft == None and flagCount == None:
+                        return 2
                     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
                     if isBomb:
                         gameOver = True
+                        gamestate = loss
                     elif (squaresLeft - flagCount) == 0 or squaresLeft == 10:
                         gameOver = True
 
@@ -176,13 +185,13 @@ def playGame4():
             if (squaresLeft - flagCount) == 0 or squaresLeft == 10:
                 return 0
                 
-            screen.fill(WHITE)
-            textObject = afont.render(text, True, (0, 0, 0,))
-            screen.blit(textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
-            break
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
-                    sys.exit()
+            # screen.fill(WHITE)
+            # textObject = afont.render(text, True, (0, 0, 0,))
+            # screen.blit(textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
+            # break
+            # pygame.display.update()
+            # for event in pygame.event.get():
+            #     if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+            #         sys.exit()
 
         pygame.display.update()

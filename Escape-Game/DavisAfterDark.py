@@ -7,17 +7,13 @@
 import sys as s
 import random as r
 import turtle as t
-import pygame as pygame
-# from all_levels.Matching.main import*
 # from all_levels.level2.memory import*
-# from all_levels.Minesweeper.main import*
-# from all_levels.Pattern.main import*
-# from start import startdisp
-
+from all_levels.Stargame.starGame import starGameMain
+from all_levels.Minesweeper.main import playGame4
+from pattern import level1Pattern
+from all_levels.Highway.wrongWayHighway import highwayMain
 from all_levels.Matching.main import playMatch
-
 from common import*
-
 import pygame as py
 import random as r
 
@@ -25,6 +21,9 @@ import random as r
 WON_GAME = 0
 LOST_GAME = 1
 EXITED_GAME = 2
+SECOND = 1
+MINUTE = 60 * SECOND
+TICKS_PER_SECOND = 30
 
 # DavisAfterDark is the main game state object
 # oh hail the God object pattern (DONT ever do this in production)
@@ -41,11 +40,21 @@ class DavisAfterDark:
         
         # background asset
         self.screenAssets["background"] = py.image.load("./assets/Enviroment.png").convert_alpha()
+
+        #Start Screen and others
         self.screenAssets["Start Screen"] = py.image.load("./assets/startscreen1.png").convert_alpha()
         self.screenAssets["Tutorial Screen"] = py.image.load("./assets/Tutorialslide.png").convert_alpha()
         self.screenAssets["Win Screen"] = py.image.load("./assets/End1.png").convert_alpha()
         self.screenAssets["Lose Screen"] = py.image.load("./assets/End2.png").convert_alpha()
         self.screenAssets["Credits Screen"] = py.image.load("./assets/credits.png").convert_alpha()
+
+        #Story Images 
+        self.screenAssets["Story Screen 1"] = py.image.load("./assets/Story1.png").convert_alpha()
+        self.screenAssets["Story Screen 2"] = py.image.load("./assets/Story2.png").convert_alpha()
+        self.screenAssets["Story Screen 3"] = py.image.load("./assets/Story2pt5.png").convert_alpha()
+        self.screenAssets["Story Screen 4"] = py.image.load("./assets/Story3.png").convert_alpha()
+        self.screenAssets["Story Screen 5"] = py.image.load("./assets/Story4.png").convert_alpha()
+        self.screenAssets["Story Screen 6"] = py.image.load("./assets/Story5.png").convert_alpha()
 
         # player asset
         player = py.image.load("./assets/MainSpriteWalking1.png").convert_alpha()
@@ -69,11 +78,17 @@ class DavisAfterDark:
             102 - End Screen Lose
         """
         self.gamestate = 0
+        self.storySlide = 1 #see drawStory
         
-        self.gamesleft = 3
-        self.clock = py.time.Clock()
-        self.clockInitialized = False
+        self.gamesleft = 5 # tasks left to win
         self.gameover = False
+
+        #True if the task is won
+        self.patternDone = False
+        self.minesweeperDone = False
+        self.starGameDone = False
+        self.matchingDone = False
+        self.highwayDone = False
 
         #colors
         self.re = 140
@@ -101,9 +116,14 @@ class DavisAfterDark:
         #memory game
         self.memX = 0
         self.memY = 500
-        self.memH = 70
-        self.memW = 100
+        self.memH = 253
+        self.memW = 323
 
+        # clock
+        self.clock = py.time.Clock()
+        self.clockInitialized = False
+        self.tick = TICKS_PER_SECOND
+        self.timeLeft = 30 * MINUTE
 
     def drawBackground(self, playerpos):
         # background
@@ -129,7 +149,7 @@ class DavisAfterDark:
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
         #top bar with 30 mins timer
-        drawTopBar(self.screen, 1800)
+        drawTopBar(self.screen, self.timeLeft)
         
         py.display.update()
     
@@ -154,7 +174,6 @@ class DavisAfterDark:
         py.display.update()
 
     def playPatternGame(self):
-        
         result = level1Pattern()
 
         # 0 : win | 1 : lose | 2 : quit
@@ -199,14 +218,44 @@ class DavisAfterDark:
             return EXITED_GAME
     
     def playHighwayGame(self):
-        timeToDeduct = highwayMain() #time to be deducted from the overall game clock
-        return timeToDeduct 
+        numberOfHits = highwayMain() #number of hits from game to be translated into time to be deducted from the overall game clock
+        return numberOfHits 
+
+    #Draws the story slides 
+    def drawStory(self): 
+        #Story State: Slides 1 - 6 are assigned numbers 1 through 6 respectively. 
+        for event in pygame.event.get():
+            if event.type == py.KEYDOWN: 
+                if event.key == py.K_n: 
+                    self.storySlide += 1 
+                if self.storySlide == 1: 
+                    self.screen.blit(self.screenAssets["Story Screen 1"], (0, 0))
+                elif self.storySlide == 2:
+                    self.screen.blit(self.screenAssets["Story Screen 2"], (0, 0))
+                elif self.storySlide == 3:
+                    self.screen.blit(self.screenAssets["Story Screen 3"], (0, 0))
+                elif self.storySlide == 4:
+                    self.screen.blit(self.screenAssets["Story Screen 4"], (0, 0))
+                elif self.storySlide == 5:
+                    self.screen.blit(self.screenAssets["Story Screen 5"], (0, 0))
+                elif self.storySlide >= 6: 
+                    self.screen.blit(self.screenAssets["Story Screen 6"], (0, 0))
+
+    def tickTime(self):
+        print(self.timeLeft)
+        self.tick -= 1
+        if self.tick <= 0:
+            self.timeLeft -= 1
+            self.tick = TICKS_PER_SECOND
 
     def start(self):
         while True:
-
+                
             #GAME LOOP -- GAME NOT OVER
             while self.gamestate < 100:
+
+                # move me plz V
+                # self.tickTime()
                 
                 # STATE 0 : START
                 if self.gamestate == 0:
@@ -233,56 +282,106 @@ class DavisAfterDark:
                     keys = py.key.get_pressed()
 
                     # if self.clockInitialized == True:
-                        
-
 
                     # step on matching game
                     if self.collision(self.playerpos, self.memX, self.memY, 64, 157):
-                        self.playercolor = (255,0,0)
-                        if keys[py.K_n]:
-                            self.gamestate = 5
+                        if self.matchingDone == False: #checks if the game has not been completed yet
+                            self.playercolor = (255,0,0)
+                            if keys[py.K_n]:
+                                self.gamestate = 5
 
                     # step on minesweeper
                     elif self.collision(self.playerpos, 575, 575, 100, 100):
-                        self.playercolor = (255,0,0)
-                        if keys[py.K_n]:
-                            self.gamestate = 3
+                        if self.minesweeperDone == False: #checks if the game has not been completed yet
+                            self.playercolor = (255,0,0)
+                            if keys[py.K_n]:
+                                self.gamestate = 3
 
                     # step on pattern game
                     elif self.collision(self.playerpos, 550, 100, 100, 60):
-                        self.playercolor = (255,0,0)
-                        if keys[py.K_n]:
-                            self.gamestate = 2
+                        if self.patternDone == False: #checks if the game has not been completed yet
+                            self.playercolor = (255,0,0)
+                            if keys[py.K_n]:
+                                self.gamestate = 2
+                    
+                    #ADD STAR GAME AND HIGHWAY GAME (to display and alter coords below to match boxes in display)***********************************************************
+                    '''
+                    # step on star game
+                    elif self.collision(self.playerpos, 550, 100, 100, 60): #<--change coords parameters here
+                        if self.starGameDone == False: #checks if the game has not been completed yet
+                            self.playercolor = (255,0,0)
+                            if keys[py.K_n]:
+                                self.gamestate = 5
+
+                    # step on highway game
+                    elif self.collision(self.playerpos, 550, 100, 100, 60): #<--change coords parameters here
+                        if self.highwayDone == False: #checks if the game has not been completed yet
+                            self.playercolor = (255,0,0)
+                            if keys[py.K_n]:
+                                self.gamestate = 6
+                    '''
+
 
                     # otherwise no stepping on anything
-                    else:
-                        self.playercolor = (0,255,0)
+                    # else:
+                    #     self.playercolor = (0,255,0)
 
                 # STATE 2 : PATTERN
                 elif self.gamestate == 2:
                     py.display.set_caption("Memory Pattern")
-                    self.playPatternGame()
+                    result = self.playPatternGame()
+
+                    if result == WON_GAME:
+                        self.gamesleft -= 1
+                        self.patternDone = True
+
+                    self.gamestate = 1
 
                 # STATE 3 : MINESWEEPER
                 elif self.gamestate == 3:
                     py.display.set_caption("Nuestro Sweeper")
-                    self.playMinesweeperGame()
+                    result = self.playMinesweeperGame()
+
+                    if result == WON_GAME:
+                        self.gamesleft -= 1
+                        self.minesweeperDone = True
+
+                    self.gamestate = 1
                     
                 # STATE 4 : STAR GAME
                 elif self.gamestate == 4:
                     py.display.set_caption("Star Game")
-                    self.playStarGame()
+                    result = self.playStarGame()
+                    
+                    if result == WON_GAME:
+                        self.gamesleft -= 1
+                        self.starGameDone = True
+
+                    self.gamestate = 1
 
                 # STATE 5 : MATCHING
                 elif self.gamestate == 5:
                     py.display.set_caption("Matching Game")
-                    self.playMatchingGame()
+                    result = self.playMatchingGame()
+                    
+                    if result == WON_GAME:
+                        self.gamesleft -= 1
+                        self.matchingDone = True
+                    if result == LOST_GAME:
+                        self.timeLeft -= 
+                    
                     self.gamestate = 1
                     
                 # STATE 6 : HIGHWAY
                 elif self.gamestate == 6:
                     py.display.set_caption("Wrong Way Highway")
-                    self.playHighwayGame()
+                    
+                    #time in seconds to deduct from overall clock
+                    timeToDeduct = self.playHighwayGame() * 5 
+                    self.timeLeft -= timeToDeduct
+
+                    self.gamesleft -= 1
+                    self.gamestate = 1
                 
                 # STATE 7 : TUTORIAL
                 elif self.gamestate == 7:
@@ -296,6 +395,7 @@ class DavisAfterDark:
                 elif self.gamestate == 8:
                     py.display.set_caption("Davis After Dark")
                     print("Story be drawn")
+                    self.drawStory()
                     for event in py.event.get():
                         if event.key == py.K_BACKSPACE: 
                             self.gamestate = 0 

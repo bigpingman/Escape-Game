@@ -28,7 +28,7 @@ def highwayMain(time=300,harder=False): #setting harder to true makes the cars m
 		if key[pygame.K_w]==1:
 			notReady=False
 
-	#returns the final time
+	#returns the final hit count
 	timesHit=main(time,harder)
 	print(timesHit)
 	return timesHit
