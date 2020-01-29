@@ -23,7 +23,7 @@ LOST_GAME = 1
 EXITED_GAME = 2
 SECOND = 1
 MINUTE = 60 * SECOND
-TICKS_PER_SECOND = 30
+TICKS_PER_SECOND = 60
 
 # DavisAfterDark is the main game state object
 # oh hail the God object pattern (DONT ever do this in production)
@@ -33,6 +33,7 @@ class DavisAfterDark:
     def __init__(self):
         # ---------------------- PYGAME STUFF ----------------------------- #
         py.init()
+        pygame.mixer.init()
         py.display.set_caption("Davis After Dark") 
 
         # ---------------------- ASSETS ----------------------------- #
@@ -86,7 +87,7 @@ class DavisAfterDark:
         self.gamestate = 0
         self.storySlide = 1 #see drawStory
         
-        self.gamesleft = 5 # tasks left to win
+        self.gamesleft = 1 # tasks left to win
         self.gameover = False
 
         #True if the task is won
@@ -96,13 +97,21 @@ class DavisAfterDark:
         self.matchingDone = False
         self.highwayDone = False
 
+        #True once all tasks are complete and the player can ESCAPE DAVIS
+        self.canEscape = False
+
         #colors
         self.re = 140
         self.g = 200
         self.b = 17
         self.brown = (150,75,0)
         self.playercolor  = (self.re,self.g,self.b)
-        
+        self.taskColorMatch = (15, 205, 155)
+        self.taskColorPattern = (15, 205, 155)
+        self.taskColorStarGame = (15, 205, 155)
+        self.taskColorMinesweeper = (15, 205, 155)
+        self.taskColorHighway = (15, 205, 155)
+
         #player pos
         self.playerX = 200
         self.playerY = 600
@@ -128,40 +137,36 @@ class DavisAfterDark:
     def drawBackground(self, playerpos):
         # background
         self.screen.blit(self.screenAssets["background"], (0, 0))
-        # centeroutline
-        py.draw.rect(self.screen, (0, 0, 0), ((375 -35.3553390593) - 2.5, (375 - 35.3553390593) - 2.5, 79.5,79.5))
-        # centerpiece
-        py.draw.rect(self.screen, (40, 176, 14), ((375 -35.3553390593), (375 - 35.3553390593), 75, 75))
         
         if not self.matchingDone:        
             # Davis 102 -- MATCHING
             py.draw.rect(self.screen, (15, 0, 0), (20 - 2.5, 500 - 2.5, 105, 75))
             # Davis 102 -- MATCHING
-            py.draw.rect(self.screen, (15, 255, 255), (20, 500, 100, 70))
+            py.draw.rect(self.screen, self.taskColorMatch, (20, 500, 100, 70))
         
         if not self.minesweeperDone:
             # Davis 101 -- MINESWEEPER
             py.draw.rect(self.screen, (15, 0, 0), (575 - 2.5, 575 - 2.5, 105, 105))
             # Davis 101 -- MINESWEEPER
-            py.draw.rect(self.screen, (15, 205, 155), (575, 575, 100, 100))
+            py.draw.rect(self.screen, self.taskColorMinesweeper, (575, 575, 100, 100))
         
         if not self.patternDone:
             # Davis 117 -- PATTERN
             py.draw.rect(self.screen, (0, 0, 0), (550-2.5, 100-2.5, 105, 65))
             # Davis 117 -- PATTERN
-            py.draw.rect(self.screen, (15, 205, 155), (550, 100, 100, 60))
+            py.draw.rect(self.screen, self.taskColorPattern, (550, 100, 100, 60))
         
         if not self.starGameDone:
             # Prof Offices -- STAR GAME
             py.draw.rect(self.screen, (15, 0, 0), (0 - 2.5, 200 - 2.5, 90, 100))
             # Prof Offices -- STAR GAME
-            py.draw.rect(self.screen, (15, 255, 255), (0, 200, 85, 95))
+            py.draw.rect(self.screen, self.taskColorStarGame, (0, 200, 85, 95))
 
         if not self.highwayDone:
             # Robotics lab -- HIGHWAY
             py.draw.rect(self.screen, (0, 0, 0), (550-2.5, 200-2.5, 105, 65))
             # Robotics lab -- HIGHWAY
-            py.draw.rect(self.screen, (15, 205, 155), (550, 200, 100, 60))
+            py.draw.rect(self.screen, self.taskColorHighway, (550, 200, 100, 60))
         
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
@@ -190,6 +195,12 @@ class DavisAfterDark:
     def drawLoseScreen(self):
         self.screen.blit(self.screenAssets["Lose Screen"], (0, 0))
         py.display.update()
+    
+    #If the player wins the gamestate is set to 101.
+    def winFunction(self):
+        if self.gamesleft == 0:
+            py.draw.rect(self.screen, (255, 0, 0), ((350 -35.3553390593), 650, 75, 75), 2)
+            py.display.update()
 
     def playPatternGame(self):
         result = level1Pattern()
@@ -274,7 +285,6 @@ class DavisAfterDark:
         py.display.update()
 
     def tickTime(self):
-        print(self.timeLeft)
         self.tick -= 1
         if self.tick <= 0:
             self.timeLeft -= 1
@@ -282,12 +292,12 @@ class DavisAfterDark:
 
     def start(self):
         while True:
-                
+            self.clock.tick(60)
             #GAME LOOP -- GAME NOT OVER
             while self.gamestate < 100:
-
+                self.clock.tick(30)
                 # move me plz V
-                # self.tickTime()
+                self.tickTime()
                 
                 # STATE 0 : START
                 if self.gamestate == 0:
@@ -315,39 +325,86 @@ class DavisAfterDark:
 
                     # if self.clockInitialized == True:
 
+                    if self.gamesleft == 0:
+                        self.winFunction()
+                        self.canEscape = True
+
                     # step on matching game
                     if self.collision(self.playerpos, 20, 500, 100, 70):
                         if self.matchingDone == False: #checks if the game has not been completed yet
+                            self.taskColorMatch = (125, 0, 255)
+                            py.display.update()
                             if keys[py.K_n]:
+                                # pygame.mixer.music.load("./music/Select.wav")
+                                # pygame.mixer.music.play(0)
+                                self.taskColorMatch = (15, 205, 155)
+                                py.display.update()
                                 self.gamestate = 5
+                            else:
+                                self.taskColorMatch = (15, 205, 155)
+                                py.display.update()
 
                     # step on minesweeper
                     elif self.collision(self.playerpos, 575, 575, 100, 100):
                         if self.minesweeperDone == False: #checks if the game has not been completed yet
+                            self.taskColorMinesweeper = (125, 0, 255)
+                            py.display.update()
                             if keys[py.K_n]:
+                                #pygame.mixer.music.load('./music/Se.wav')
+			                    #pygame.mixer.music.play(0)
+                                self.taskColorMinesweeper = (15, 205, 155)
+                                py.display.update()
                                 self.gamestate = 3
+                            else:
+                                self.taskColorMinesweeper = (15, 205, 155)
+                                py.display.update()
 
                     # step on pattern game
                     elif self.collision(self.playerpos, 550, 100, 100, 60):
                         if self.patternDone == False: #checks if the game has not been completed yet
+                            self.taskColorPattern = (125, 0, 255)
+                            py.display.update()
                             if keys[py.K_n]:
+                                #
+                                self.taskColorPattern = (15, 205, 155)
+                                py.display.update()
                                 self.gamestate = 2
+                            else:
+                                self.taskColorPattern = (15, 205, 155)
+                                py.display.update()
                                        
                     # step on star game
                     elif self.collision(self.playerpos, 0, 200, 85, 95): 
                         if self.starGameDone == False: #checks if the game has not been completed yet
+                            self.taskColorStarGame = (125, 0, 255)
+                            py.display.update()
                             if keys[py.K_n]:
+                                #pygame.mixer.music.load('./music/Select.wav')
+			                    #pygame.mixer.music.play(0)
+                                self.taskColorStarGame = (15, 205, 155)
+                                py.display.update()
                                 self.gamestate = 4
+                            else:
+                                self.taskColorStarGame = (15, 205, 155)
+                                py.display.update()
 
                     # step on highway game
                     elif self.collision(self.playerpos, 550, 200, 100, 60): 
                         if self.highwayDone == False: #checks if the game has not been completed yet
+                            self.taskColorHighway = (125, 0, 255)
+                            py.display.update()
                             if keys[py.K_n]:
+                                self.taskColorHighway = (15, 205, 155)
+                                py.display.update()
                                 self.gamestate = 6
+                            else:
+                                self.taskColorHighway = (15, 205, 155)
+                                py.display.update()
                     
-
-                    # otherwise no stepping on anything
-                    # else:
+                    #step on exit door
+                    elif self.canEscape == True and self.collision(self.playerpos, (375 -35.3553390593), 650, 75, 75):
+                        if keys[py.K_n]:
+                            self.gamestate = 101 #sets to win screen
 
                 # STATE 2 : PATTERN
                 elif self.gamestate == 2:
@@ -358,7 +415,7 @@ class DavisAfterDark:
                         self.gamesleft -= 1
                         self.patternDone = True
                     if result == LOST_GAME:
-                        self.timeLeft -= 0.5 #decrements by 30 sec if they lose
+                        self.timeLeft -= 30 #decrements by 30 sec if they lose
 
                     self.gamestate = 1
 
@@ -371,7 +428,7 @@ class DavisAfterDark:
                         self.gamesleft -= 1
                         self.minesweeperDone = True
                     if result == LOST_GAME:
-                        self.timeLeft -= 0.5 #decrements by 30 sec if they lose
+                        self.timeLeft -= 30 #decrements by 30 sec if they lose
 
                     self.gamestate = 1
                     
@@ -384,7 +441,7 @@ class DavisAfterDark:
                         self.gamesleft -= 1
                         self.starGameDone = True
                     if result == LOST_GAME:
-                        self.timeLeft -= 0.5 #decrements by 30 sec if they lose
+                        self.timeLeft -= 30 #decrements by 30 sec if they lose
 
                     self.gamestate = 1
 
@@ -397,7 +454,7 @@ class DavisAfterDark:
                         self.gamesleft -= 1
                         self.matchingDone = True
                     if result == LOST_GAME:
-                        self.timeLeft -= 0.5 #decrements by 30 sec if they lose
+                        self.timeLeft -= 30 #decrements by 30 sec if they lose
                     
                     self.gamestate = 1
                     
@@ -447,6 +504,8 @@ class DavisAfterDark:
                 # STATE 102 : END SCREEN LOSE
                 elif self.gamestate == 102:
                     self.drawLoseScreen()
+
+                self.clock.tick(30)
         
 
     def controls(self):
@@ -468,19 +527,19 @@ class DavisAfterDark:
 
         if keys[py.K_a]: # move left
             # py.mixer.music.play(1)
-            x -= 0.5
+            x -= 2
 
         if keys[py.K_d]: # move right
             # py.mixer.music.play(1)
-            x += 0.5
+            x += 2
 
         if keys[py.K_s]: # move down
             # py.mixer.music.play(1)
-            y += 0.5
+            y += 2
 
         if keys[py.K_w]: # move up
             # py.mixer.music.play(1)
-            y -= 0.5
+            y -= 2
 
         if keys[py.K_p]:
             s.exit()
@@ -502,8 +561,7 @@ class DavisAfterDark:
             self.playerpos[1] = 20
 
 
-         
-
+    #objectX, objectY, objectWidth, objectHeight
     def collision(self, playerpos, oX, oY, oW, oH):
         pX = playerpos[0]
         pY = playerpos[1]

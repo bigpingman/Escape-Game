@@ -36,7 +36,7 @@ def drawClock(screen, timeInSeconds):
     y = 0 + CLOCK_BORDER
 
     # background
-    pygame.draw.rect(screen, WHITE, pygame.Rect((x , y), (width, height)))
+    pygame.draw.rect(screen, (255,255,255), pygame.Rect((x , y), (width, height)))
 
     # numbers
     afont = pygame.font.SysFont("Helvetica", 60, bold=False)
@@ -51,15 +51,15 @@ def drawBackButton(screen):
     y = 0 + CLOCK_BORDER
 
     # background
-    pygame.draw.rect(screen, (100, 20, 120), pygame.Rect((x , y), (width, height)))
+    pygame.draw.rect(screen, (125, 0, 255), pygame.Rect((x , y), (width, height)))
 
     # font for back
     afont = pygame.font.SysFont("Helvetica", 60, bold=False)
-    textObject = afont.render("back", True, WHITE)
+    textObject = afont.render("back", True, (255,255,255))
     screen.blit(textObject, (x + 25, 2 * y - 10))
 
 def drawTopBar(screen, timeInSeconds):
-    pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(
+    pygame.draw.rect(screen, (0, 204, 204), pygame.Rect(
         (0, 0), (X_DIMENSION, Y_DIMENSION / TOPBAR_RATIO)))
 
     drawBackButton(screen)
