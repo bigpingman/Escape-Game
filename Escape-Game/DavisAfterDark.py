@@ -83,6 +83,7 @@ class DavisAfterDark:
             9 - Credits
             101 - End Screen Win
             102 - End Screen Lose
+            103 - Retry
         """
         self.gamestate = 0
         self.storySlide = 1 #see drawStory
@@ -335,14 +336,11 @@ class DavisAfterDark:
                             self.taskColorMatch = (125, 0, 255)
                             py.display.update()
                             if keys[py.K_n]:
-                                # pygame.mixer.music.load("./music/Select.wav")
-                                # pygame.mixer.music.play(0)
+                                pygame.mixer.music.load("./music/Select.wav")
+                                pygame.mixer.music.play(0)
                                 self.taskColorMatch = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 5
-                            else:
-                                self.taskColorMatch = (15, 205, 155)
-                                py.display.update()
 
                     # step on minesweeper
                     elif self.collision(self.playerpos, 575, 575, 100, 100):
@@ -355,10 +353,7 @@ class DavisAfterDark:
                                 self.taskColorMinesweeper = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 3
-                            else:
-                                self.taskColorMinesweeper = (15, 205, 155)
-                                py.display.update()
-
+                    
                     # step on pattern game
                     elif self.collision(self.playerpos, 550, 100, 100, 60):
                         if self.patternDone == False: #checks if the game has not been completed yet
@@ -369,9 +364,6 @@ class DavisAfterDark:
                                 self.taskColorPattern = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 2
-                            else:
-                                self.taskColorPattern = (15, 205, 155)
-                                py.display.update()
                                        
                     # step on star game
                     elif self.collision(self.playerpos, 0, 200, 85, 95): 
@@ -384,9 +376,6 @@ class DavisAfterDark:
                                 self.taskColorStarGame = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 4
-                            else:
-                                self.taskColorStarGame = (15, 205, 155)
-                                py.display.update()
 
                     # step on highway game
                     elif self.collision(self.playerpos, 550, 200, 100, 60): 
@@ -397,14 +386,20 @@ class DavisAfterDark:
                                 self.taskColorHighway = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 6
-                            else:
-                                self.taskColorHighway = (15, 205, 155)
-                                py.display.update()
                     
                     #step on exit door
                     elif self.canEscape == True and self.collision(self.playerpos, (375 -35.3553390593), 650, 75, 75):
                         if keys[py.K_n]:
                             self.gamestate = 101 #sets to win screen
+
+                    #not stepping on anything
+                    else:
+                        self.taskColorMatch = (15, 205, 155)
+                        self.taskColorMinesweeper = (15, 205, 155)
+                        self.taskColorHighway = (15, 205, 155)
+                        self.taskColorPattern = (15, 205, 155)
+                        self.taskColorStarGame = (15, 205, 155)
+                        py.display.update()
 
                 # STATE 2 : PATTERN
                 elif self.gamestate == 2:
