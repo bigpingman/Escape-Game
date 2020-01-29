@@ -41,18 +41,23 @@ STATE_LOSE = 6
 
 DECK_OF_CARDS = [
     pygame.image.load("./all_levels/Matching/assets/aceClubs.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/aceDiamonds.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/aceHearts.png").convert_alpha(), 
+    pygame.image.load("./assets/3.png").convert_alpha(), 
+    pygame.image.load("./assets/4.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/jackClubs.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/jackDiamonds.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/jackHearts.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/jackSpades.png").convert_alpha(), 
+    pygame.image.load("./assets/5.png").convert_alpha(), 
+    pygame.image.load("./assets/6.png").convert_alpha(), 
+    pygame.image.load("./assets/7.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/kingClubs.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/kingDiamonds.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/kingHearts.png").convert_alpha(), 
-    pygame.image.load("./all_levels/Matching/assets/kingSpades.png").convert_alpha(), 
+    pygame.image.load("./assets/8.png").convert_alpha(), 
+    pygame.image.load("./assets/9.png").convert_alpha(), 
+    pygame.image.load("./assets/10.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/queenClubs.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/queenDiamonds.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/queenHearts.png").convert_alpha(), 
     pygame.image.load("./all_levels/Matching/assets/queenSpades.png").convert_alpha(), 
 ]
+
+for i in range(len(DECK_OF_CARDS)):
+    DECK_OF_CARDS[i] = pygame.transform.scale(DECK_OF_CARDS[i],(100,150))
+
+CARD_BACK_IMAGE = pygame.image.load("./assets/cardBack.png").convert_alpha()

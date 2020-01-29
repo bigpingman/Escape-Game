@@ -6,7 +6,7 @@ from all_levels.Matching.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOAR
 # initialize basic elements
 [screen, gameClock] = initScreenAndGameClock()
 afont = pygame.font.SysFont("Helvetica", 30, bold=False)
-from all_levels.Matching.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS
+from all_levels.Matching.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS, CARD_BACK_IMAGE                
 
 def drawTable(screen, area):
     [areax, areay] = area
@@ -26,13 +26,14 @@ def drawCard(screen, x, y, width, height, number):
     if number > 0:
         text = ""
         textObject = afont.render(text, True, (0, 0, 0,))
-        card = pygame.draw.rect(screen, (50, 144, 177),
+        card = pygame.draw.rect(screen, (255, 144, 0),
                                 pygame.Rect((x, y), (width, height)))
         screen.blit(textObject, (x - 10 + width // 2, y + height // 3))
+        screen.blit(CARD_BACK_IMAGE, (x + (width // 8), y))
     else:
         text = str(number * -1)
         textObject = afont.render(text, True, (0, 0, 0,))
-        card = pygame.draw.rect(screen, (100, 144, 100),
+        card = pygame.draw.rect(screen, (255, 144, 0),
                                 pygame.Rect((x, y), (width, height)))
         screen.blit(textObject, (x - 10 + width // 2, y + height // 3))
 
@@ -88,6 +89,9 @@ def handleClick(cards, rawCards, board, cardWidth, cardHeight, currentlySelected
                     board[i][j] *= -1
                     # can return early because can only click in one place at time
                     return [board, card]
+
+        elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
+            return [None, None]
     
     return [board, None]
 
@@ -114,8 +118,10 @@ def playMatch():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     [board, card] = handleClick(
                         cards, rawCards, board, cardWidth, cardHeight)
+                    if board == None and card == None:
+                        return 2
                     # it is possible they don't actually click on a card or a valid card
-                    if card == None:
+                    elif card == None:
                         continue
                     else:
                         currentlySelectedCard1 = card

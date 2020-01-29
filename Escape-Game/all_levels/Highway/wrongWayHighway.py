@@ -63,7 +63,8 @@ def main(time=300,harder=False):
 
 	carHit=carHit.move(340,500)
 
-	font = pygame.font.SysFont("comicsansms", 25)
+	# font = pygame.font.SysFont("comicsansms", 25) - causes crash on a linux machine
+	font = pygame.font.SysFont("helvetica", 15)
 
 
 	carSpawns=[]
@@ -91,8 +92,9 @@ def main(time=300,harder=False):
 	text=""
 	temporary=""
 	color=(0,0,0)
+	carsLeft=25
 	while gameOver==False:
-
+		text=font.render("Cars Left:"+ str(carsLeft),True,(0,0,0))
 		#this updates the timer every fourty frames
 		'''if frame%40==0 or frame==1:
 			time-=1
@@ -128,7 +130,7 @@ def main(time=300,harder=False):
 
 		screen.blit(background,backgroundRect)
 		screen.blit(car,carHit)
-		#screen.blit(text,(0,0))
+		screen.blit(text,(0,0))
 		pygame.time.Clock().tick(60)
 
 		#main controls
@@ -158,6 +160,7 @@ def main(time=300,harder=False):
 			screen.blit(enemy[num],enemyHit[num])
 			num+=1
 			pygame.display.flip()
+			carsLeft-=1
 
 		#ends once all the cars have passed
 		if num==25:

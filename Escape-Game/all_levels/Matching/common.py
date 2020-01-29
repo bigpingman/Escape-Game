@@ -26,6 +26,9 @@ def timeToString(timeInSeconds):
     else:
         seconds = str(seconds)
     minutes = str(timeInSeconds // 60)
+    # while int(seconds) > 0:
+        
+        
     return minutes + ":" + seconds
 
 def drawClock(screen, timeInSeconds):

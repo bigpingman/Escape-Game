@@ -17,23 +17,23 @@ py.display.set_caption("Dodge the Stars to Win the Game!")
 
 #Draws the background
 def backgroundImg(x, y):
-    bgImg = py.image.load("bulletGameBackground.png")
+    bgImg = py.image.load("./assets/bulletGameBackground.png")
     screen.blit(bgImg,(x, y))
     return bgImg
 
 #Draws the start screen
 def startImage(x, y):
-    startImg = py.image.load("Startforbullets.png")
+    startImg = py.image.load("./assets/Startforbullets.png")
     return startImg
 
 #Draws the death screen
 def deathScreen():
-    lose_img = py.image.load("loseScreen.png")
+    lose_img = py.image.load("./assets/loseScreen.png")
     screen.blit(lose_img, (0,0))
 
 #Creates the player
 def player(x, y):
-    playerImg = py.image.load("spaceship.png").convert_alpha()
+    playerImg = py.image.load("./assets/spaceship.png").convert_alpha()
     screen.blit(playerImg, (x, y))
     return playerImg
 
@@ -55,7 +55,7 @@ def distance(x, y, j, k):
 def bulletLine(x, y, pX, pY, hitbox):
 
     for i in range(10):
-        bullets = py.image.load("starBullet.png")
+        bullets = py.image.load("./assets/starBullet.png")
         screen.blit(bullets, (i*75 + x, y))
         alive = impDistanceFormula(i*75 + x, y, pX, pY, hitbox)
         if alive == False: 
@@ -65,7 +65,7 @@ def bulletLine(x, y, pX, pY, hitbox):
 def bulletSide(x, y, pX, pY, hitbox): 
 
     for i in range(10):
-        bullets = py.image.load("starBullet.png").convert_alpha()
+        bullets = py.image.load("./assets/starBullet.png").convert_alpha()
         screen.blit(bullets, (x, i*75 + y))
         alive = impDistanceFormula(x, i*75 + y, pX, pY, hitbox)
         if alive == False: 
@@ -73,7 +73,7 @@ def bulletSide(x, y, pX, pY, hitbox):
 
 #Draws a big bullet
 def bulletCircle(x, y, pX, pY, hitbox):
-    bullets = py.image.load("Meteor.png").convert_alpha()
+    bullets = py.image.load("./assets/Meteor.png").convert_alpha()
     screen.blit(bullets, (x, y))
     alive = impDistanceFormula(x, y, pX, pY, hitbox)
     if alive == False: 
@@ -83,9 +83,9 @@ def bulletCircle(x, y, pX, pY, hitbox):
 def bulletArrow(x, y, pX, pY, hitbox): 
 
     for i in range(6):
-        b1 = py.image.load("starBullet.png").convert_alpha()
-        b2 = py.image.load("starBullet.png").convert_alpha()
-        b3 = py.image.load("starBullet.png").convert_alpha()
+        b1 = py.image.load("./assets/starBullet.png").convert_alpha()
+        b2 = py.image.load("./assets/starBullet.png").convert_alpha()
+        b3 = py.image.load("./assets/starBullet.png").convert_alpha()
         screen.blit(b1, (x, i*75 + y))
         screen.blit(b2, (i*75 + x, y))
         screen.blit(b3, (i*75 + x, i*75 + y))
@@ -105,10 +105,10 @@ def bulletArrow(x, y, pX, pY, hitbox):
 def bulletSquare(x, y, pX, pY, hitbox): 
 
     for i in range(5):
-        b1 = py.image.load("starBullet.png").convert_alpha()
-        b2 = py.image.load("starBullet.png").convert_alpha()
-        b3 = py.image.load("starBullet.png").convert_alpha()
-        b4 = py.image.load("starBullet.png").convert_alpha()
+        b1 = py.image.load("./assets/starBullet.png").convert_alpha()
+        b2 = py.image.load("./assets/starBullet.png").convert_alpha()
+        b3 = py.image.load("./assets/starBullet.png").convert_alpha()
+        b4 = py.image.load("./assets/starBullet.png").convert_alpha()
 
         screen.blit(b1, (x, i*60 + y))
         screen.blit(b1, (i*60 + x, y))
@@ -131,7 +131,7 @@ def bulletSquare(x, y, pX, pY, hitbox):
 
 #Draws one star.
 def soloBullet(x, y, pX, pY, hitbox): 
-    bullets = py.image.load("starBullet.png").convert_alpha()
+    bullets = py.image.load("./assets/starBullet.png").convert_alpha()
     screen.blit(bullets, (x, y))
     alive = impDistanceFormula(x, y, pX, pY, hitbox)
     if alive == False: 
@@ -140,7 +140,7 @@ def soloBullet(x, y, pX, pY, hitbox):
 #Draws 3 bullets at random.
 def randomBullets(x, y, pX, pY, hitbox):
     for i in range(3):
-        bullets = py.image.load("starBullet.png").convert_alpha()
+        bullets = py.image.load("./assets/starBullet.png").convert_alpha()
         screen.blit(bullets, (x, y + i*80))
         alive = impDistanceFormula(x, i*80 + y, pX, pY, hitbox)
         if alive == False: 
@@ -207,7 +207,7 @@ def starGameMain():
     #The speed at which the player and enemy move around. 
     playerSpeed = 6
 
-    startImg = py.image.load("Startforbullets.png")
+    startImg = py.image.load("./assets/Startforbullets.png")
     button = py.Rect(15, 12, 226, 73)
 
     #Actual game loop  
@@ -260,7 +260,7 @@ def starGameMain():
                 backgroundImg(0, 0)
             if timer >= endTime and movement != False:
                 victory = True
-                screen.blit(py.image.load("WinScreen.png"), (0,0))  
+                screen.blit(py.image.load("./assets/WinScreen.png"), (0,0))  
                 return 0 #if you win the game, it will return 0 
 
             cm.drawTopBar(screen, timer/1000)

@@ -120,7 +120,7 @@ def displayGrid(grid):
 
 #draws grid onto screen
 def drawGrid(screen):
-    
+    print("drawing")
     # outline of grid
     pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY), (bottomRX-topLX, bottomRY-topLY)), 3) 
 
@@ -224,6 +224,8 @@ def drawPattern(screen, grid):
             pygame.draw.rect(screen, (255, 255, 51), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)))
             pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)), 2)
 
+# def drawClicked(self):
+
 #plays game
 def playGame(screen, grid, numTrue):
 
@@ -281,7 +283,11 @@ def level1Pattern():
     backClicked = False
 
     while quitGame == False:
+        #draw blank grid
         drawTopBar(screen, 0)
+        screen.blit(sky, (0,0))
+        drawTopBar(screen,0)
+        drawGrid(screen)  
         pygame.display.update()
 
         #shows pattern
@@ -312,7 +318,7 @@ def level1Pattern():
         pickText = pickFont.render('Pick 4 squares to recreate the pattern', False, (0, 0, 0))
 
         if gameOver == False:
-            screen.blit(pickText, (105, 615))
+            screen.blit(pickText, (60, 615))
             pygame.display.update()
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
@@ -341,7 +347,7 @@ def level1Pattern():
                         pygame.display.update()
                         
                         #pick 4 
-                        screen.blit(pickText, (105, 615))
+                        screen.blit(pickText, (60, 615))
                         pygame.display.update()
                         
                     else: #no more retries
@@ -399,7 +405,7 @@ def level2Pattern():
         
         #outcome texts
         textFont = pygame.font.SysFont("Arial", 70, True)
-        pickFont = pygame.font.SysFont("Arial", 35, True)
+        pickFont = pygame.font.SysFont("Arial", 25, True)
         winText = textFont.render('You win!', False, (255, 255, 51))
         loseText = textFont.render('You lose!', False, (255, 255, 51))
         retryText = textFont.render('Try Again!', False, (255, 255, 51))
@@ -407,7 +413,7 @@ def level2Pattern():
         pickText = pickFont.render('Pick 4 squares to recreate the pattern', False, (0, 0, 0))
 
         if gameOver == False:
-            screen.blit(pickText, (105, 615))
+            screen.blit(pickText, (60, 615))
             pygame.display.update()
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
@@ -436,7 +442,7 @@ def level2Pattern():
                         pygame.display.update()
                         
                         #pick 4 
-                        screen.blit(pickText, (105, 615))
+                        screen.blit(pickText, (60, 615))
                         pygame.display.update()
                         
                     else: #no more retries

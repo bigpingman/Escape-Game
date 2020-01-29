@@ -119,9 +119,7 @@ def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLe
                 return [board, isBomb, squaresLeft - count, flagCount]
 
         elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
-            for event in py.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    return [None, None, None, None]
+            return [None, None, None, None]
 
 
     return [board, False, squaresLeft, flagCount]
@@ -150,6 +148,7 @@ def playGame4():
             if event.type == pygame.MOUSEBUTTONDOWN:
                     [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount)
                     if board == None and isBomb == None and squaresLeft == None and flagCount == None:
+                        pygame.mouse.set_cursor(*pygame.cursors.arrow)
                         return 2
                     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
                     if isBomb:
@@ -179,10 +178,12 @@ def playGame4():
 
         if gameOver:
             if gamestate == loss:
+                pygame.mouse.set_cursor(*pygame.cursors.arrow)
                 return 1
             
 
             if (squaresLeft - flagCount) == 0 or squaresLeft == 10:
+                pygame.mouse.set_cursor(*pygame.cursors.arrow)
                 return 0
                 
             # screen.fill(WHITE)
