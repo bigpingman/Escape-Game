@@ -224,7 +224,58 @@ def drawPattern(screen, grid):
             pygame.draw.rect(screen, (255, 255, 51), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)))
             pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)), 2)
 
-# def drawClicked(self):
+def drawClicked(screen, clickedSquares):
+     for i in clickedSquares:
+        if i == [0, 0]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX, topLY), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY), (sqLen, sqLen)), 2)
+        elif i == [0, 1]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX, topLY + sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY + sqLen), (sqLen, sqLen)), 2)
+        elif i == [0, 2]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX, topLY + 2*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY + 2*sqLen), (sqLen, sqLen)), 2)
+        elif i == [0, 3]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX, topLY + 3*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY + 3*sqLen), (sqLen, sqLen)), 2)
+        elif i == [1, 0]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + sqLen, topLY), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + sqLen, topLY), (sqLen, sqLen)), 2)
+        elif i == [1, 1]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + sqLen, topLY + sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + sqLen, topLY + sqLen), (sqLen, sqLen)), 2)
+        elif i == [1, 2]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + sqLen, topLY + 2*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + sqLen, topLY + 2*sqLen), (sqLen, sqLen)), 2)
+        elif i == [1, 3]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + sqLen, topLY + 3*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + sqLen, topLY + 3*sqLen), (sqLen, sqLen)), 2)
+        elif i == [2, 0]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 2*sqLen, topLY), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 2*sqLen, topLY), (sqLen, sqLen)), 2)
+        elif i == [2, 1]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 2*sqLen, topLY + sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 2*sqLen, topLY + sqLen), (sqLen, sqLen)), 2)
+        elif i == [2, 2]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 2*sqLen, topLY + 2*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 2*sqLen, topLY + 2*sqLen), (sqLen, sqLen)), 2)
+        elif i == [2, 3]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 2*sqLen, topLY + 3*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 2*sqLen, topLY + 3*sqLen), (sqLen, sqLen)), 2)
+        elif i == [3, 0]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 3*sqLen, topLY), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY), (sqLen, sqLen)), 2)
+        elif i == [3, 1]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 3*sqLen, topLY + sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY + sqLen), (sqLen, sqLen)), 2)
+        elif i == [3, 2]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 3*sqLen, topLY + 2*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY + 2*sqLen), (sqLen, sqLen)), 2)
+        elif i == [3, 3]:
+            pygame.draw.rect(screen, (200, 200, 51), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)))
+            pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX + 3*sqLen, topLY + 3*sqLen), (sqLen, sqLen)), 2)
+
+        pygame.display.update()
 
 #plays game
 def playGame(screen, grid, numTrue):
@@ -239,6 +290,7 @@ def playGame(screen, grid, numTrue):
         squaresPicked = []
         for i in range(numTrue):
             ps = pickSquare()
+
             
             if ps == 2:
                 return
@@ -246,6 +298,7 @@ def playGame(screen, grid, numTrue):
             psX = int(ps[0])
             psY = int(ps[1])
             squaresPicked.append([psX, psY])
+            drawClicked(screen, squaresPicked)
     
         # list of TRUE squares
         trueSquares = []
@@ -323,6 +376,7 @@ def level1Pattern():
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
                 outcome = playGame(screen, grid, 4)
+                drawGrid(screen)
 
                 if outcome == False: #lose
                     failsCounter+=1
