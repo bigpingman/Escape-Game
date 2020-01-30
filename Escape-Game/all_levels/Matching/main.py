@@ -146,7 +146,10 @@ def playMatch():
                     [board, card] = handleClick(
                         cards, rawCards, board, cardWidth, cardHeight, currentlySelectedCard1)
                     # it is possible they don't actually click on a card or a valid card
-                    if card == None:
+                    if board == None and card == None:
+                        pygame.mixer.pause()
+                        return 2
+                    elif card == None:
                         continue
                     else:
                         currentlySelectedCard2 = card
