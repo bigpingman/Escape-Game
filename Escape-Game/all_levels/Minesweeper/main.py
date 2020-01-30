@@ -159,7 +159,6 @@ def playGame4():
                             gamestate = loss
                         else:
                             while isBomb:
-                                print("Regen")
                                 board = generateBoard()
                                 [board, isBomb, squaresLeft, flagCount, didClickSquare] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
                                 initialClick = False
@@ -185,7 +184,10 @@ def playGame4():
         if secondTimer <= 0:
             secondTimer = 30
             timeLeft -= 1
-
+        
+        # check run out of time
+        if timeLeft <= 0:
+            return 1
       
         gameClock.tick(30)
 

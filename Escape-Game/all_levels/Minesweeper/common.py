@@ -20,7 +20,8 @@ def initScreenAndGameClock():
     return [screen, gameClock]
 
 def timeToString(timeInSeconds):
-    timeInSeconds = int(timeInSeconds)
+    if timeInSeconds < 0:
+        timeInSeconds = 0
     seconds = timeInSeconds % 60
     if seconds < 10:
         seconds = "0" + str(seconds)
@@ -59,12 +60,14 @@ def drawBackButton(screen):
     textObject = afont.render("back", True, (255,255,255))
     screen.blit(textObject, (x + 25, 2 * y - 10))
 
-def drawTopBar(screen, timeInSeconds):
+def drawTopBar(screen, timeInSeconds, includeClock=True):
     pygame.draw.rect(screen, (0, 204, 204), pygame.Rect(
         (0, 0), (X_DIMENSION, Y_DIMENSION / TOPBAR_RATIO)))
 
     drawBackButton(screen)
-    drawClock(screen, timeInSeconds)
+
+    if includeClock:
+        drawClock(screen, timeInSeconds)
 
     # size of the rest of the screen below the topbar
     return [X_DIMENSION, Y_DIMENSION - (Y_DIMENSION / TOPBAR_RATIO)]

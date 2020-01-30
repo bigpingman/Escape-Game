@@ -128,7 +128,6 @@ def displayGrid(grid):
 
 #draws grid onto screen
 def drawGrid(screen):
-    print("drawing")
     # outline of grid
     pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((topLX, topLY), (bottomRX-topLX, bottomRY-topLY)), 3) 
 
@@ -362,7 +361,6 @@ def level1Pattern():
         
         while pygame.time.get_ticks() < (t1+1000):
             for event in pygame.event.get(20):
-                print(event)
                 if event.type == pygame.QUIT:
                     exit()
         
@@ -387,7 +385,12 @@ def level1Pattern():
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
                 outcome = playGame(screen, grid, 4)
-                drawGrid(screen)
+               
+                #returns to blank grid
+                screen.blit(sky, (0,0))
+                drawTopBar(screen,0, False)
+                drawGrid(screen)  
+                pygame.display.update()
 
                 if outcome == False: #lose
                     failsCounter+=1
@@ -465,7 +468,6 @@ def level2Pattern():
         
         while pygame.time.get_ticks() < (t1+1000):
             for event in pygame.event.get(20):
-                print(event)
                 if event.type == pygame.QUIT:
                     exit()
         
@@ -490,6 +492,12 @@ def level2Pattern():
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
                 outcome = playGame(screen, grid, 6)
+
+               #returns to blank grid
+                screen.blit(sky, (0,0))
+                drawTopBar(screen,0, False)
+                drawGrid(screen)  
+                pygame.display.update()
 
                 if outcome == False: #lose
                     failsCounter+=1
