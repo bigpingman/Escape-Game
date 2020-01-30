@@ -279,10 +279,11 @@ class DavisAfterDark:
         #this calls the fixTime function to generate the time value
         timer=timeToString(time)
         
-        backgroundRect=background.get_rect()
-        self.screen.blit(background,backgroundRect)
-        text = font.render(timer, True, (0,0,0))
-        self.screen.blit(text,(300,270))
+        if loser==False:
+            backgroundRect=background.get_rect()
+            self.screen.blit(background,backgroundRect)
+            text = font.render(timer, True, (0,0,0))
+            self.screen.blit(text,(300,270))
         pygame.display.flip()
 
     #Draws the story slides 
