@@ -6,7 +6,7 @@ from all_levels.Matching.constant import X_DIMENSION, Y_DIMENSION, BOARD_M, BOAR
 # initialize basic elements
 [screen, gameClock] = initScreenAndGameClock()
 afont = pygame.font.SysFont("Helvetica", 30, bold=False)
-from all_levels.Matching.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS
+from all_levels.Matching.match import generateBoard, STATE_FIRST_DRAW, STATE_SECOND_DRAW, STATE_ANALYZE_DRAW, STATE_DISPLAY_DELAY, STATE_WIN, STATE_LOSE, DECK_OF_CARDS, CARD_BACK_IMAGE                
 
 def drawTable(screen, area):
     [areax, areay] = area
@@ -26,13 +26,14 @@ def drawCard(screen, x, y, width, height, number):
     if number > 0:
         text = ""
         textObject = afont.render(text, True, (0, 0, 0,))
-        card = pygame.draw.rect(screen, (50, 144, 177),
+        card = pygame.draw.rect(screen, (255, 144, 0),
                                 pygame.Rect((x, y), (width, height)))
         screen.blit(textObject, (x - 10 + width // 2, y + height // 3))
+        screen.blit(CARD_BACK_IMAGE, (x + (width // 8), y))
     else:
         text = str(number * -1)
         textObject = afont.render(text, True, (0, 0, 0,))
-        card = pygame.draw.rect(screen, (100, 144, 100),
+        card = pygame.draw.rect(screen, (255, 144, 0),
                                 pygame.Rect((x, y), (width, height)))
         screen.blit(textObject, (x - 10 + width // 2, y + height // 3))
 
@@ -82,12 +83,16 @@ def handleClick(cards, rawCards, board, cardWidth, cardHeight, currentlySelected
         if cardX <= mouseX and (cardX + cardWidth) >= mouseX and cardY <= mouseY and (cardY + cardWidth) >= mouseY:
             # then check if that card was the card already selected
             if (currentlySelected != None and currentlySelected != card) or currentlySelected == None:
+                pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/CardFlipSound.wav'))
                 # finally check to see if that card is already flipped
                 [i, j] = cards[hashRect(card)]
                 if board[i][j] > 0:
                     board[i][j] *= -1
                     # can return early because can only click in one place at time
                     return [board, card]
+
+        elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
+            return [None, None]
     
     return [board, None]
 
@@ -106,6 +111,7 @@ def playMatch():
     currentlySelectedCard2 = None
     delayTicker = 0
     flipCount = 0
+    pygame.mixer.Channel(1).play(pygame.mixer.Sound('./music/Card_Matching_theme.wav'))
 
     # begin main loop
     while True:
@@ -114,8 +120,11 @@ def playMatch():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     [board, card] = handleClick(
                         cards, rawCards, board, cardWidth, cardHeight)
+                    if board == None and card == None:
+                        pygame.mixer.pause()
+                        return 2
                     # it is possible they don't actually click on a card or a valid card
-                    if card == None:
+                    elif card == None:
                         continue
                     else:
                         currentlySelectedCard1 = card
@@ -137,7 +146,10 @@ def playMatch():
                     [board, card] = handleClick(
                         cards, rawCards, board, cardWidth, cardHeight, currentlySelectedCard1)
                     # it is possible they don't actually click on a card or a valid card
-                    if card == None:
+                    if board == None and card == None:
+                        pygame.mixer.pause()
+                        return 2
+                    elif card == None:
                         continue
                     else:
                         currentlySelectedCard2 = card
@@ -176,41 +188,12 @@ def playMatch():
             [cards, rawCards, cardWidth, cardHeight] = draw(screen, board, timeLeft)
 
         elif state == STATE_WIN:
-            if delayTicker == 0:
-                screen.fill(WHITE)
-                restOfArea = drawTopBar(screen, timeLeft)
-                textObject = afont.render("Winner!", True, (0, 0, 0,))
-                screen.blit(
-                    textObject, ((X_DIMENSION // 2), Y_DIMENSION // 2))
-
-                break
-                pygame.display.update()
-
-            delayTicker += 1
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return 0
-            if delayTicker == 30:
-                r.game1ready = False
+            pygame.mixer.pause()
+            return 0
 
         elif state == STATE_LOSE:
-            if delayTicker == 0:
-                screen.fill(WHITE)
-                textObject = afont.render("You Lose - time is up!", True, (0, 0, 0,))
-                screen.blit(
-                    textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
-
-                break
-                pygame.display.update()
-
-            delayTicker += 1
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return 1
-            if delayTicker == 30:
-                return 1
+            pygame.mixer.pause()
+            return 1
 
         if state != 5 and state != 6:
             # update time

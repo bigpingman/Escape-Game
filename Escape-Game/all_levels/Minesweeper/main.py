@@ -8,6 +8,7 @@ from all_levels.Minesweeper.minesweeper import generateBoard, getNeighbors
 afont = pygame.font.SysFont("Helvetica", 30, bold=False)
 flag = pygame.image.load("./all_levels/Minesweeper/assets/flag.png").convert_alpha()
 bomb = pygame.image.load("./all_levels/Minesweeper/assets/bomb.png").convert_alpha()
+mineStart = pygame.image.load("./assets/Nuestrosweeper_tutorial.png").convert_alpha()
 
 def drawTable(screen, area):
     [areax, areay] = area
@@ -92,15 +93,14 @@ def handleFlagging(i, j, board, flagCount):
     if board[i][j]["isFlagged"]:
         board[i][j]["isFlagged"] = False
         return [board, flagCount - 1]
-    elif flagCount < 10:
+    elif flagCount < 7:
         board[i][j]["isFlagged"] = True
         return [board, flagCount + 1]
     else:
         return [board, flagCount]
 
-def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount):
+def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY):
     for square in rawSquares:
-        [mouseX, mouseY] = pygame.mouse.get_pos()
         squareX = square.x
         squareY = square.y
 
@@ -116,9 +116,13 @@ def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLe
                 else:
                     [board, isBomb, count] = handleFlipping(i, j, board, 0)
                 # can return early because can only click in one place at time
-                return [board, isBomb, squaresLeft - count, flagCount]
+                return [board, isBomb, squaresLeft - count, flagCount, True]
 
-    return [board, False, squaresLeft, flagCount]
+        elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
+            return [None, None, None, None, None]
+
+
+    return [board, False, squaresLeft, flagCount, False]
 
 def playGame4():
     # initialize game state
@@ -132,57 +136,94 @@ def playGame4():
     victory = 1
     loss = 0
     result = 2
+    initialClick = True
+    didClickSquare = False
 
     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
 
+    pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/ms_theme.wav'))
+
     # begin main loop
-    while True:
-        [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
-        gameOver = False
-        # deal with input
+    start = False # if false the start screen will be displayed
+    active = False 
+    while start == False: 
+        screen.blit(mineStart, (0, 0))
+        pygame.display.update()
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                    [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount)
-                    [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
-                    if isBomb:
-                        gameOver = True
-                    elif (squaresLeft - flagCount) == 0 or squaresLeft == 10:
-                        gameOver = True
-
-            if event.type == pygame.KEYDOWN:
-                if isFlagging:
-                    isFlagging = False
-                    pygame.mouse.set_cursor(*pygame.cursors.arrow)
-                else:
-                    isFlagging = True
-                    pygame.mouse.set_cursor(*pygame.cursors.diamond)
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-        # update time
-        secondTimer -= 1
-        if secondTimer <= 0:
-            secondTimer = 30
-            timeLeft -= 1
-
-      
-        gameClock.tick(30)
-
-        if gameOver:
-            if gamestate == loss:
-                return 1
-            
-
-            if (squaresLeft - flagCount) == 0 or squaresLeft == 10:
-                return 0
-                
-            screen.fill(WHITE)
-            textObject = afont.render(text, True, (0, 0, 0,))
-            screen.blit(textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
-            break
-            pygame.display.update()
+            if event.type == pygame.KEYDOWN: 
+                start = True
+                active = True 
+        while active:
+            [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
+            gameOver = False
+            # deal with input
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        [mouseX, mouseY] = pygame.mouse.get_pos()
+                        [board, isBomb, squaresLeft, flagCount, didClickSquare] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
+                        if board == None and isBomb == None and squaresLeft == None and flagCount == None:
+                            pygame.mouse.set_cursor(*pygame.cursors.arrow)
+                            pygame.mixer.pause()
+                            return 2
+                        if isBomb:
+                            if not initialClick:
+                                gameOver = True 
+                                gamestate = loss
+                            else:
+                                while isBomb:
+                                    board = generateBoard()
+                                    [board, isBomb, squaresLeft, flagCount, didClickSquare] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
+                                    initialClick = False
+                        elif didClickSquare and initialClick:
+                            initialClick = False
+
+
+                        elif (squaresLeft - flagCount) == 0 or squaresLeft == 7:
+                            gameOver = True
+
+                        [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
+
+                if event.type == pygame.KEYDOWN:
+                    if isFlagging:
+                        isFlagging = False
+                        pygame.mouse.set_cursor(*pygame.cursors.arrow)
+                    else:
+                        isFlagging = True
+                        pygame.mouse.set_cursor(*pygame.cursors.diamond)
+                if event.type == pygame.QUIT:
                     sys.exit()
 
-        pygame.display.update()
+            # update time
+            secondTimer -= 1
+            if secondTimer <= 0:
+                secondTimer = 30
+                timeLeft -= 1
+            
+            # check run out of time
+            if timeLeft <= 0:
+                return 1
+        
+            gameClock.tick(30)
+
+            if gameOver:
+                if gamestate == loss:
+                    pygame.mouse.set_cursor(*pygame.cursors.arrow)
+                    pygame.mixer.pause()
+                    return 1
+                
+
+                if (squaresLeft - flagCount) == 0 or squaresLeft == 7:
+                    pygame.mouse.set_cursor(*pygame.cursors.arrow)
+                    pygame.mixer.pause()
+                    return 0
+                    
+                # screen.fill(WHITE)
+                # textObject = afont.render(text, True, (0, 0, 0,))
+                # screen.blit(textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
+                # break
+                # pygame.display.update()
+                # for event in pygame.event.get():
+                #     if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+                #         sys.exit()
+
+            pygame.display.update()

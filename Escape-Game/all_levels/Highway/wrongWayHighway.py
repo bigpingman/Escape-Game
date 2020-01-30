@@ -28,7 +28,7 @@ def highwayMain(time=300,harder=False): #setting harder to true makes the cars m
 		if key[pygame.K_w]==1:
 			notReady=False
 
-	#returns the final time
+	#returns the final hit count
 	timesHit=main(time,harder)
 	print(timesHit)
 	return timesHit
@@ -63,7 +63,8 @@ def main(time=300,harder=False):
 
 	carHit=carHit.move(340,500)
 
-	font = pygame.font.SysFont("comicsansms", 25)
+	# font = pygame.font.SysFont("comicsansms", 25) - causes crash on a linux machine
+	font = pygame.font.SysFont("helvetica", 15)
 
 
 	carSpawns=[]
@@ -91,8 +92,11 @@ def main(time=300,harder=False):
 	text=""
 	temporary=""
 	color=(0,0,0)
-	while gameOver==False:
+	carsLeft=25
 
+	pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/Car_Game_Theme.wav'))
+	while gameOver==False:
+		text=font.render("Cars Left:"+ str(carsLeft),True,(0,0,0))
 		#this updates the timer every fourty frames
 		'''if frame%40==0 or frame==1:
 			time-=1
@@ -128,7 +132,7 @@ def main(time=300,harder=False):
 
 		screen.blit(background,backgroundRect)
 		screen.blit(car,carHit)
-		#screen.blit(text,(0,0))
+		screen.blit(text,(0,0))
 		pygame.time.Clock().tick(60)
 
 		#main controls
@@ -141,7 +145,7 @@ def main(time=300,harder=False):
 		if key[pygame.K_p]==1:
 			sys.exit()
 
-		#makes sure the car doesnt hit the end
+		#makes sure the car doesnt hit the edges of the screen
 		if carHit.left<120:
 			carHit=carHit.move(15,0)
 		if carHit.right>width-120:
@@ -158,6 +162,7 @@ def main(time=300,harder=False):
 			screen.blit(enemy[num],enemyHit[num])
 			num+=1
 			pygame.display.flip()
+			carsLeft-=1
 
 		#ends once all the cars have passed
 		if num==25:
@@ -197,6 +202,8 @@ def main(time=300,harder=False):
 
 
 		frame+=1
+
+	pygame.mixer.pause()
 
 	return timesHit
 	#print(timesHit)
