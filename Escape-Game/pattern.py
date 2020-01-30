@@ -348,9 +348,9 @@ def level1Pattern():
         pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/Pattern_theme.wav'))
 
         #draw blank grid
-        drawTopBar(screen, 0)
+        drawTopBar(screen, 0, False)
         screen.blit(sky, (0,0))
-        drawTopBar(screen,0)
+        drawTopBar(screen,0, False)
         drawGrid(screen)  
         pygame.display.update()
 
@@ -368,7 +368,7 @@ def level1Pattern():
         
         #returns to blank grid
         screen.blit(sky, (0,0))
-        drawTopBar(screen,0)
+        drawTopBar(screen,0, False)
         drawGrid(screen)  
         pygame.display.update()
         
@@ -407,7 +407,7 @@ def level1Pattern():
                                 
                         #redraws blank grid
                         screen.blit(sky, (0,0))
-                        drawTopBar(screen,0)
+                        drawTopBar(screen,0, False)
                         drawGrid(screen)  
                         pygame.display.update()
                         
@@ -454,7 +454,7 @@ def level2Pattern():
     backClicked = False
 
     while quitGame == False:
-        drawTopBar(screen, 0)
+        drawTopBar(screen, 0, False)
         pygame.display.update()
 
         #shows pattern
@@ -471,7 +471,7 @@ def level2Pattern():
         
         #returns to blank grid
         screen.blit(sky, (0,0))
-        drawTopBar(screen,0)
+        drawTopBar(screen,0, False)
         drawGrid(screen)  
         pygame.display.update()
         
@@ -509,7 +509,7 @@ def level2Pattern():
                                 
                         #redraws blank grid
                         screen.blit(sky, (0,0))
-                        drawTopBar(screen,0)
+                        drawTopBar(screen,0, False)
                         drawGrid(screen)  
                         pygame.display.update()
                         

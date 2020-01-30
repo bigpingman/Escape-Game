@@ -23,7 +23,7 @@ LOST_GAME = 1
 EXITED_GAME = 2
 SECOND = 1
 MINUTE = 60 * SECOND
-TICKS_PER_SECOND = 60
+TICKS_PER_SECOND = 30
 
 # DavisAfterDark is the main game state object
 # oh hail the God object pattern (DONT ever do this in production)
@@ -148,14 +148,12 @@ class DavisAfterDark:
     def drawBackground(self, playerpos):
         # background
         self.screen.blit(self.screenAssets["background"], (0, 0))
-        
-        '''
+
         if not self.matchingDone:        
             # Davis 102 -- MATCHING
             py.draw.rect(self.screen, (15, 0, 0), (20 - 2.5, 500 - 2.5, 105, 75))
             # Davis 102 -- MATCHING
             py.draw.rect(self.screen, self.taskColorMatch, (20, 500, 100, 70))
-        '''
 
         if not self.minesweeperDone:
             # Davis 101 -- MINESWEEPER
@@ -202,11 +200,11 @@ class DavisAfterDark:
         py.display.update()
 
     def drawWinScreen(self):
-        self.screen.blit(self.screenAssets["Win Screen"], (0, 0))
+        self.drawEndScreen(time=self.timeLeft, loser=False)
         py.display.update()
 
     def drawLoseScreen(self):
-        self.screen.blit(self.screenAssets["Lose Screen"], (0, 0))
+        self.drawEndScreen(time=self.timeLeft, loser=True)
         py.display.update()
     
     #If the player wins, draws the doorway
@@ -263,6 +261,25 @@ class DavisAfterDark:
         numberOfHits = highwayMain() #number of hits from game to be translated into time to be deducted from the overall game clock
         return numberOfHits 
 
+    def drawEndScreen(self, time=300, loser=True):
+        #checks the loser variable to determine which screen to use
+        if loser==True:
+            background=pygame.image.load("./assets/End2.png")
+
+        else:
+            background=pygame.image.load("./assets/End1.png")
+
+        font = pygame.font.SysFont("helvetica", 50)
+
+        #this calls the fixTime function to generate the time value
+        timer=timeToString(time)
+        
+        backgroundRect=background.get_rect()
+        self.screen.blit(background,backgroundRect)
+        text = font.render(timer, True, (0,0,0))
+        self.screen.blit(text,(300,270))
+        pygame.display.flip()
+
     #Draws the story slides 
     def drawStory(self): 
         #Story State: Slides 1 - 6 are assigned numbers 1 through 6 respectively. 
@@ -283,22 +300,22 @@ class DavisAfterDark:
         #Updates the Screen 
         if self.storySlide == 1: 
             self.screen.blit(self.screenAssets["Story Screen 1"], (0, 0))
-        if self.storySlide == 2: 
+        elif self.storySlide == 2: 
             self.screen.blit(self.screenAssets["Story Screen 2"], (0, 0))
-        if self.storySlide == 3: 
+        elif self.storySlide == 3: 
             self.screen.blit(self.screenAssets["Story Screen 3"], (0, 0))
-        if self.storySlide == 4: 
+        elif self.storySlide == 4: 
             self.screen.blit(self.screenAssets["Story Screen 4"], (0, 0))
-        if self.storySlide == 5: 
+        elif self.storySlide == 5: 
             self.screen.blit(self.screenAssets["Story Screen 5"], (0, 0))
-        if self.storySlide == 6: 
+        elif self.storySlide == 6: 
             self.screen.blit(self.screenAssets["Story Screen 6"], (0, 0))
-        if self.storySlide > 6: 
+        elif self.storySlide > 6: 
             self.storySlide = 1
         py.display.update()
 
     def tickTime(self):
-        self.tick -= 2
+        self.tick -= 1
         if self.tick <= 0:
             self.timeLeft -= 1
             self.tick = TICKS_PER_SECOND
@@ -306,12 +323,9 @@ class DavisAfterDark:
     def start(self):
         #pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/mainhub.wav'))
         while True:
-            self.clock.tick(60)
             #GAME LOOP -- GAME NOT OVER
             while self.gamestate < 100:
                 self.clock.tick(30)
-                # move me plz V
-                self.tickTime()
                 
                 # STATE 0 : START
                 if self.gamestate == 0:
@@ -321,7 +335,7 @@ class DavisAfterDark:
                             sys.exit()
                         elif event.type == py.KEYDOWN:
                             if event.key == py.K_RETURN:
-                                self.gamestate = 1 
+                                self.gamestate = 1
                                 self.clockInitialized = True
                             elif event.key == py.K_t: 
                                 self.gamestate = 7
@@ -332,6 +346,8 @@ class DavisAfterDark:
 
                 # STATE 1 : MAIN HUB
                 elif self.gamestate == 1:
+                    self.tickTime() # tick the time here
+
                     py.display.set_caption("Davis After Dark")
                     self.drawBackground(self.playerpos)
                     self.controls()
@@ -348,7 +364,6 @@ class DavisAfterDark:
                     elif self.timeLeft > 0 and self.gamesleft == 0 and self.escaped == True:
                         self.gamestate = 101
 
-                    '''
                     # step on matching game
                     if self.collision(self.playerpos, 20, 500, 100, 70):
                         if self.matchingDone == False: #checks if the game has not been completed yet
@@ -360,9 +375,9 @@ class DavisAfterDark:
                                 self.taskColorMatch = (15, 205, 155)
                                 py.display.update()
                                 self.gamestate = 5
-                    '''
+                    
                     # step on minesweeper
-                    if self.collision(self.playerpos, 575, 575, 100, 100):
+                    elif self.collision(self.playerpos, 575, 575, 100, 100):
                         if self.minesweeperDone == False: #checks if the game has not been completed yet
                             self.taskColorMinesweeper = (125, 0, 255)
                             py.display.update()
@@ -426,7 +441,7 @@ class DavisAfterDark:
                     
                     result = self.playPatternGame()
 
-                    self.timeLeft -= 10
+                    self.tickTime() # tick the time here
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -442,7 +457,7 @@ class DavisAfterDark:
                     
                     result = self.playMinesweeperGame()
 
-                    self.timeLeft -= 60
+                    self.tickTime() # tick the time here
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -458,7 +473,7 @@ class DavisAfterDark:
                     
                     result = self.playStarGame()
                     
-                    self.timeLeft -= 15
+                    self.tickTime() # tick the time here
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -468,14 +483,14 @@ class DavisAfterDark:
 
                     self.gamestate = 1
 
-                '''
+                
                 # STATE 5 : MATCHING
                 elif self.gamestate == 5:
                     py.display.set_caption("Matching Game")
                                         
                     result = self.playMatchingGame()
                     
-                    self.timeLeft -= 45
+                    self.tickTime() # tick the time here
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -484,7 +499,7 @@ class DavisAfterDark:
                         self.timeLeft -= 30 #decrements by 30 sec if they lose
                     
                     self.gamestate = 1
-                '''
+            
 
                 # STATE 6 : HIGHWAY
                 if self.gamestate == 6:
@@ -493,7 +508,8 @@ class DavisAfterDark:
                     #time in seconds to deduct from overall clock
                     timeToDeduct = self.playHighwayGame() * 5 
                     self.timeLeft -= timeToDeduct #decrements by timeToDeduct sec if they lose
-                    self.timeLeft -= 33 #time that the highway game lasts
+                    # self.timeLeft -= 33 #time that the highway game lasts
+                    self.tickTime() # tick the time here
 
                     self.highwayDone = True
                     self.gamesleft -= 1
@@ -521,8 +537,9 @@ class DavisAfterDark:
                     py.display.set_caption("Davis After Dark")
                     self.drawCredits()
                     for event in py.event.get():
-                        if event.key == py.K_BACKSPACE: 
-                            self.gamestate = 0 
+                        if event.type == py.KEYDOWN:
+                            if event.key == py.K_BACKSPACE: 
+                                self.gamestate = 0 
             
             #GAME OVER LOOP -- END SCREENS
             while self.gamestate > 100:
@@ -614,17 +631,17 @@ class DavisAfterDark:
 
         # collision data
 
-        if 0 > self.playerpos[0] + 2:
+        if 2 > self.playerpos[0]:
             self.playerpos[0] = 2
 
-        if self.playerpos[0] > self.width - 10:
-            self.playerpos[0] = self.width - 10
+        if self.playerpos[0] > self.width - 40:
+            self.playerpos[0] = self.width - 40
 
-        if self.playerpos[1] > self.height - 10:
-            self.playerpos[1] = self.height - 10
+        if self.playerpos[1] > self.height - 50:
+            self.playerpos[1] = self.height - 50
 
-        if self.playerpos[1] < 0 + 20:
-            self.playerpos[1] = 20
+        if self.playerpos[1] < 0 + 100:
+            self.playerpos[1] = 100
 
 
     #objectX, objectY, objectWidth, objectHeight

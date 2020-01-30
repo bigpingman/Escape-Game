@@ -115,13 +115,13 @@ def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLe
                 else:
                     [board, isBomb, count] = handleFlipping(i, j, board, 0)
                 # can return early because can only click in one place at time
-                return [board, isBomb, squaresLeft - count, flagCount]
+                return [board, isBomb, squaresLeft - count, flagCount, True]
 
         elif mouseX > 0 and mouseX < 210 and mouseY > 0 and mouseY < 70:
-            return [None, None, None, None]
+            return [None, None, None, None, None]
 
 
-    return [board, False, squaresLeft, flagCount]
+    return [board, False, squaresLeft, flagCount, False]
 
 def playGame4():
     # initialize game state
@@ -136,6 +136,7 @@ def playGame4():
     loss = 0
     result = 2
     initialClick = True
+    didClickSquare = False
 
     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
 
@@ -147,7 +148,7 @@ def playGame4():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                     [mouseX, mouseY] = pygame.mouse.get_pos()
-                    [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
+                    [board, isBomb, squaresLeft, flagCount, didClickSquare] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
                     if board == None and isBomb == None and squaresLeft == None and flagCount == None:
                         pygame.mouse.set_cursor(*pygame.cursors.arrow)
                         return 2
@@ -160,8 +161,10 @@ def playGame4():
                             while isBomb:
                                 print("Regen")
                                 board = generateBoard()
-                                [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
+                                [board, isBomb, squaresLeft, flagCount, didClickSquare] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
                                 initialClick = False
+                    elif didClickSquare and initialClick:
+                        initialClick = False
 
 
                     elif (squaresLeft - flagCount) == 0 or squaresLeft == 7:

@@ -182,41 +182,10 @@ def playMatch():
             [cards, rawCards, cardWidth, cardHeight] = draw(screen, board, timeLeft)
 
         elif state == STATE_WIN:
-            if delayTicker == 0:
-                screen.fill(WHITE)
-                restOfArea = drawTopBar(screen, timeLeft)
-                textObject = afont.render("Winner!", True, (0, 0, 0,))
-                screen.blit(
-                    textObject, ((X_DIMENSION // 2), Y_DIMENSION // 2))
-
-                break
-                pygame.display.update()
-
-            delayTicker += 1
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return 0
-            if delayTicker == 30:
-                r.game1ready = False
+            return 0
 
         elif state == STATE_LOSE:
-            if delayTicker == 0:
-                screen.fill(WHITE)
-                textObject = afont.render("You Lose - time is up!", True, (0, 0, 0,))
-                screen.blit(
-                    textObject, (10 + (X_DIMENSION // 2), Y_DIMENSION // 2))
-
-                break
-                pygame.display.update()
-
-            delayTicker += 1
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return 1
-            if delayTicker == 30:
-                return 1
+            return 1
 
         if state != 5 and state != 6:
             # update time
