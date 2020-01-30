@@ -284,6 +284,15 @@ def drawClicked(screen, clickedSquares):
 
         pygame.display.update()
 
+def drawTriesLeft(screen, triesLeft):
+    # subtract one since you have that many tries left after this one... 2:42am note to self lolz
+    triesLeft -= 1
+
+    font = pygame.font.SysFont("helvetica", 50)
+    text = font.render("Tries left: " + str(triesLeft), True, (0,0,0))
+    screen.blit(text,(300,20))
+
+
 #plays game
 def playGame(screen, grid, numTrue):
 
@@ -348,6 +357,7 @@ def level1Pattern():
 
         #draw blank grid
         drawTopBar(screen, 0, False)
+        drawTriesLeft(screen, 3 - failsCounter)
         screen.blit(sky, (0,0))
         drawTopBar(screen,0, False)
         drawGrid(screen)  
@@ -367,6 +377,7 @@ def level1Pattern():
         #returns to blank grid
         screen.blit(sky, (0,0))
         drawTopBar(screen,0, False)
+        drawTriesLeft(screen, 3 - failsCounter)
         drawGrid(screen)  
         pygame.display.update()
         
@@ -389,6 +400,7 @@ def level1Pattern():
                 #returns to blank grid
                 screen.blit(sky, (0,0))
                 drawTopBar(screen,0, False)
+                drawTriesLeft(screen, 3 - failsCounter)
                 drawGrid(screen)  
                 pygame.display.update()
 
@@ -411,6 +423,7 @@ def level1Pattern():
                         #redraws blank grid
                         screen.blit(sky, (0,0))
                         drawTopBar(screen,0, False)
+                        drawTriesLeft(screen, 3 - failsCounter)
                         drawGrid(screen)  
                         pygame.display.update()
                         
