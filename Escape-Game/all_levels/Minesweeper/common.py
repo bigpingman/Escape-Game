@@ -22,6 +22,7 @@ def initScreenAndGameClock():
 def timeToString(timeInSeconds):
     if timeInSeconds < 0:
         timeInSeconds = 0
+    timeInSeconds = int(timeInSeconds)
     seconds = timeInSeconds % 60
     if seconds < 10:
         seconds = "0" + str(seconds)
@@ -45,6 +46,17 @@ def drawClock(screen, timeInSeconds):
     textObject = afont.render(timeToString(timeInSeconds), True, BLACK)
     screen.blit(textObject, (x + 50, 2 * y - 10))
 
+def drawKeysLeft(screen, numKeysLeft):
+    width = (X_DIMENSION // CLOCK_SPACING) - (CLOCK_BORDER * 2)
+    height = (Y_DIMENSION // TOPBAR_RATIO) - (CLOCK_BORDER * 2)
+
+    x = CLOCK_BORDER + width
+    y = 0 + CLOCK_BORDER
+
+    afont = pygame.font.SysFont("Helvetica", 30, bold=False)
+    textObject = afont.render("Keys to collect: " + str(numKeysLeft), True, (0,0,0))
+    screen.blit(textObject, (x + 25, 2 * y + 10))
+
 def drawBackButton(screen):
     width = (X_DIMENSION // CLOCK_SPACING) - (CLOCK_BORDER * 2)
     height = (Y_DIMENSION // TOPBAR_RATIO) - (CLOCK_BORDER * 2)
@@ -60,14 +72,18 @@ def drawBackButton(screen):
     textObject = afont.render("back", True, (255,255,255))
     screen.blit(textObject, (x + 25, 2 * y - 10))
 
-def drawTopBar(screen, timeInSeconds, includeClock=True):
+def drawTopBar(screen, timeInSeconds, includeClock=True, includeBackButton=True, includeKeysLeft=False, keys=5):
     pygame.draw.rect(screen, (0, 204, 204), pygame.Rect(
         (0, 0), (X_DIMENSION, Y_DIMENSION / TOPBAR_RATIO)))
 
-    drawBackButton(screen)
+    if includeBackButton:
+        drawBackButton(screen)
 
     if includeClock:
         drawClock(screen, timeInSeconds)
+
+    if includeKeysLeft:
+        drawKeysLeft(screen, keys)
 
     # size of the rest of the screen below the topbar
     return [X_DIMENSION, Y_DIMENSION - (Y_DIMENSION / TOPBAR_RATIO)]

@@ -66,6 +66,8 @@ class DavisAfterDark:
         bigImg2 = py.transform.scale(bigImg2, (770, 770))
         self.screenAssets["Story Screen 6"] = bigImg2
 
+        self.screenAssets["key"] = py.image.load("./assets/key.png").convert_alpha()
+
         # player asset
         player = py.image.load("./assets/MainSpriteWalking1.png").convert_alpha()
         player = py.transform.scale(player,(40,80))
@@ -84,6 +86,8 @@ class DavisAfterDark:
             7 - Tutorial Screen 
             8 - Story 
             9 - Credits
+            10 - Win Task
+            11 - Lose Task
             101 - End Screen Win
             102 - End Screen Lose
             103 - Retry
@@ -182,8 +186,9 @@ class DavisAfterDark:
         # player
         self.screen.blit(self.screenAssets["player"], (playerpos[0] ,playerpos[1] - 20))
         
-        #top bar with 30 mins timer
-        drawTopBar(self.screen, self.timeLeft)
+        #top bar with timer
+        drawTopBar(self.screen, self.timeLeft, includeKeysLeft=True, keys=self.gamesleft)
+
         
         py.display.update()
     
@@ -313,6 +318,34 @@ class DavisAfterDark:
         elif self.storySlide > 6: 
             self.storySlide = 1
         py.display.update()
+
+    def drawTaskWinScreen(self):
+        keyImg = self.screenAssets["key"]
+        
+        font = pygame.font.SysFont("helvetica", 50)
+        text = font.render("Win, key obtained!", True, (255,255,255))
+        
+
+        for x in range(0, 32):
+            angle = (90 * x) % 360
+            keyImg = pygame.transform.rotate(keyImg, angle)
+            self.screen.fill((1,1,1))
+            drawTopBar(self.screen, self.timeLeft, includeBackButton=False, includeKeysLeft=True, keys=self.gamesleft)
+            self.screen.blit(keyImg, (340, 400))
+            self.screen.blit(text,(170,300))
+            pygame.display.update()
+            time.sleep(0.05)
+
+
+    def drawTaskLoseScreen(self):
+        self.screen.fill((1,1,1))
+        drawTopBar(self.screen, self.timeLeft, includeBackButton=False, includeKeysLeft=True, keys=self.gamesleft)
+        font = pygame.font.SysFont("helvetica", 50)
+        text = font.render("Task lost. Try again!", True, (255,255,255))
+        self.screen.blit(text,(170,300))
+        pygame.display.update()
+        time.sleep(1.5)
+
 
     def tickTime(self):
         self.tick -= 1
@@ -454,10 +487,12 @@ class DavisAfterDark:
                     if result == WON_GAME:
                         self.gamesleft -= 1
                         self.patternDone = True
-                    if result == LOST_GAME:
+                        self.gamestate = 10
+                    elif result == LOST_GAME:
                         self.timeLeft -= 30 #decrements by 30 sec if they lose
-
-                    self.gamestate = 1
+                        self.gamestate = 11
+                    else:
+                        self.gamestate = 1
 
                 # STATE 3 : MINESWEEPER
                 elif self.gamestate == 3:
@@ -478,10 +513,12 @@ class DavisAfterDark:
                     if result == WON_GAME:
                         self.gamesleft -= 1
                         self.minesweeperDone = True
-                    if result == LOST_GAME:
+                        self.gamestate = 10
+                    elif result == LOST_GAME:
                         self.timeLeft -= 30 #decrements by 30 sec if they lose
-
-                    self.gamestate = 1
+                        self.gamestate = 11
+                    else:
+                        self.gamestate = 1
                     
                 # STATE 4 : STAR GAME
                 elif self.gamestate == 4:
@@ -502,10 +539,12 @@ class DavisAfterDark:
                     if result == WON_GAME:
                         self.gamesleft -= 1
                         self.starGameDone = True
-                    if result == LOST_GAME:
+                        self.gamestate = 10
+                    elif result == LOST_GAME:
                         self.timeLeft -= 30 #decrements by 30 sec if they lose
-
-                    self.gamestate = 1
+                        self.gamestate = 11
+                    else:
+                        self.gamestate = 1
 
                 
                 # STATE 5 : MATCHING
@@ -527,10 +566,12 @@ class DavisAfterDark:
                     if result == WON_GAME:
                         self.gamesleft -= 1
                         self.matchingDone = True
-                    if result == LOST_GAME:
+                        self.gamestate = 10
+                    elif result == LOST_GAME:
                         self.timeLeft -= 30 #decrements by 30 sec if they lose
-                    
-                    self.gamestate = 1
+                        self.gamestate = 11
+                    else:
+                        self.gamestate = 1
             
 
                 # STATE 6 : HIGHWAY
@@ -551,14 +592,11 @@ class DavisAfterDark:
                     self.timeLeft -= int(elapsed)
 
                     self.timeLeft -= timeToDeduct #decrements by timeToDeduct sec if they lose
-                    # self.timeLeft -= 33 #time that the highway game lasts
-                    
-
 
                     self.highwayDone = True
                     self.gamesleft -= 1
 
-                    self.gamestate = 1
+                    self.gamestate = 10
                 
                 # STATE 7 : TUTORIAL
                 elif self.gamestate == 7:
@@ -584,6 +622,20 @@ class DavisAfterDark:
                         if event.type == py.KEYDOWN:
                             if event.key == py.K_BACKSPACE: 
                                 self.gamestate = 0 
+
+                # STATE 10: TASK WON
+                elif self.gamestate == 10:
+                    py.display.set_caption("Davis After Dark")
+                    self.drawTaskWinScreen()
+                    self.gamestate = 1
+
+                # STATE 11: TASK LOST
+                elif self.gamestate == 11:
+                    py.display.set_caption("Davis After Dark")
+                    self.drawTaskLoseScreen()
+                    self.gamestate = 1
+
+                
             
             #GAME OVER LOOP -- END SCREENS
             while self.gamestate > 100:

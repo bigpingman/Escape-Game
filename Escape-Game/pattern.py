@@ -309,7 +309,7 @@ def playGame(screen, grid, numTrue):
             ps = pickSquare()
             
             if ps == 2:
-                return
+                return 2
 
             psX = int(ps[0])
             psY = int(ps[1])
@@ -337,9 +337,9 @@ def playGame(screen, grid, numTrue):
                     counterCorrect += 1
 
         if counterCorrect == numTrue:
-            return True
+            return 1
         else:
-            return False
+            return 0
     
 
 def level1Pattern():
@@ -404,7 +404,7 @@ def level1Pattern():
                 drawGrid(screen)  
                 pygame.display.update()
 
-                if outcome == False: #lose
+                if outcome == 0: #lose
                     failsCounter+=1
                     
                     if failsCounter < 3: #retry
@@ -437,11 +437,14 @@ def level1Pattern():
                         drawPattern(screen, grid)
                         pygame.display.update()
                 
-                else: #win
+                elif outcome == 1: #win
                     won = True
                     screen.blit(sky, (0,0))
                     screen.blit(winText, (200, 640))
                     pygame.display.update()
+                
+                else:
+                    return 2
             
             gameOver = True
 
@@ -512,7 +515,7 @@ def level2Pattern():
                 drawGrid(screen)  
                 pygame.display.update()
 
-                if outcome == False: #lose
+                if outcome == 0: #lose
                     failsCounter+=1
                     
                     if failsCounter < 3: #retry
@@ -544,12 +547,15 @@ def level2Pattern():
                         drawPattern(screen, grid)
                         pygame.display.update()
                 
-                else: #win
+                elif outcome == 1: #win
                     won = True
                     screen.blit(sky, (0,0))
                     screen.blit(winText, (200, 640))
                     pygame.display.update()
             
+                else:
+                    return 2
+
             gameOver = True
 
         # return statements: 0 if won, 1 if lost, 2 if exited (back button)
