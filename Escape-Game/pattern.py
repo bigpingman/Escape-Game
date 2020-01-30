@@ -444,6 +444,7 @@ def level1Pattern():
                     pygame.display.update()
                 
                 else:
+                    pygame.mixer.pause()
                     return 2
             
             gameOver = True
@@ -457,10 +458,13 @@ def level1Pattern():
 
         # return statements: 0 if won, 1 if lost, 2 if exited (back button)
         if (won == True and backClicked == False):
+            pygame.mixer.pause()
             return 0
         elif (won == False and backClicked == False):
+            pygame.mixer.pause()
             return 1
         else:
+            pygame.mixer.pause()
             return 2
 
 def level2Pattern():
@@ -554,16 +558,20 @@ def level2Pattern():
                     pygame.display.update()
             
                 else:
+                    pygame.mixer.pause()
                     return 2
 
             gameOver = True
 
         # return statements: 0 if won, 1 if lost, 2 if exited (back button)
         if (won == True and backClicked == False):
+            pygame.mixer.pause()
             return 0
         elif (won == False and backClicked == False):
+            pygame.mixer.pause()
             return 1
         else:
+            pygame.mixer.pause()
             return 2
 
 # level1Pattern() #add conditional to determine whether to call level 1 or 2!!!!!!
