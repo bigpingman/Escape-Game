@@ -83,6 +83,7 @@ def handleClick(cards, rawCards, board, cardWidth, cardHeight, currentlySelected
         if cardX <= mouseX and (cardX + cardWidth) >= mouseX and cardY <= mouseY and (cardY + cardWidth) >= mouseY:
             # then check if that card was the card already selected
             if (currentlySelected != None and currentlySelected != card) or currentlySelected == None:
+                pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/CardFlipSound.wav'))
                 # finally check to see if that card is already flipped
                 [i, j] = cards[hashRect(card)]
                 if board[i][j] > 0:
@@ -110,6 +111,7 @@ def playMatch():
     currentlySelectedCard2 = None
     delayTicker = 0
     flipCount = 0
+    pygame.mixer.Channel(1).play(pygame.mixer.Sound('./music/Card_Matching_theme.wav'))
 
     # begin main loop
     while True:
@@ -119,6 +121,7 @@ def playMatch():
                     [board, card] = handleClick(
                         cards, rawCards, board, cardWidth, cardHeight)
                     if board == None and card == None:
+                        pygame.mixer.pause()
                         return 2
                     # it is possible they don't actually click on a card or a valid card
                     elif card == None:
@@ -182,9 +185,11 @@ def playMatch():
             [cards, rawCards, cardWidth, cardHeight] = draw(screen, board, timeLeft)
 
         elif state == STATE_WIN:
+            pygame.mixer.pause()
             return 0
 
         elif state == STATE_LOSE:
+            pygame.mixer.pause()
             return 1
 
         if state != 5 and state != 6:

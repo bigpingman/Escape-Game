@@ -215,6 +215,7 @@ def starGameMain():
     victory = False # if this is true the player wins
     active = False # makes the while the loop run or not 
     start = False # if false the start screen will be displayed 
+    py.mixer.Channel(0).play(py.mixer.Sound('./music/BulletHell_theme.wav'))
     while start == False: 
         screen.blit(startImg, (0, 0))
         py.display.update()
@@ -230,6 +231,7 @@ def starGameMain():
                 if event.type == py.MOUSEBUTTONDOWN: 
                     mouse = event.pos
                     if button.collidepoint(mouse): 
+                        py.mixer.pause()
                         return 2 #Press the back button the game will return 2 
             
             #Checks for keypresses
@@ -261,6 +263,7 @@ def starGameMain():
             if timer >= endTime and movement != False:
                 victory = True
                 screen.blit(py.image.load("./assets/WinScreen.png"), (0,0))  
+                py.mixer.pause()
                 return 0 #if you win the game, it will return 0 
 
             cm.drawTopBar(screen, timer/1000)
@@ -360,6 +363,7 @@ def starGameMain():
 
             if movement == False: 
                 deathScreen()
+                py.mixer.pause()
                 return 1 #if you lose the game will return 1
 
             py.display.update()

@@ -93,6 +93,8 @@ def main(time=300,harder=False):
 	temporary=""
 	color=(0,0,0)
 	carsLeft=25
+
+	pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/Car_Game_Theme.wav'))
 	while gameOver==False:
 		text=font.render("Cars Left:"+ str(carsLeft),True,(0,0,0))
 		#this updates the timer every fourty frames
@@ -200,6 +202,8 @@ def main(time=300,harder=False):
 
 
 		frame+=1
+
+	pygame.mixer.pause()
 
 	return timesHit
 	#print(timesHit)
