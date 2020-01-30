@@ -20,6 +20,8 @@ def initScreenAndGameClock():
     return [screen, gameClock]
 
 def timeToString(timeInSeconds):
+    if timeInSeconds < 0:
+        timeInSeconds = 0
     seconds = timeInSeconds % 60
     if seconds < 10:
         seconds = "0" + str(seconds)

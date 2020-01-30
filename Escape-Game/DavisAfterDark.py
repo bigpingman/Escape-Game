@@ -91,7 +91,7 @@ class DavisAfterDark:
         self.gamestate = 0
         self.storySlide = 1 #see drawStory
         
-        self.gamesleft = 4 # tasks left to win
+        self.gamesleft = 5 # tasks left to win
         self.gameover = False
 
         #True if the task is won
@@ -359,7 +359,7 @@ class DavisAfterDark:
                         self.winFunction()
                         self.canEscape = True
                     
-                    if self.timeLeft == 0 and self.gamesleft > 0:
+                    if self.timeLeft <= 0 and self.gamesleft > 0:
                         self.gamestate = 102
                     elif self.timeLeft > 0 and self.gamesleft == 0 and self.escaped == True:
                         self.gamestate = 101
@@ -439,9 +439,17 @@ class DavisAfterDark:
                 elif self.gamestate == 2:
                     py.display.set_caption("Memory Pattern")
                     
+                    # start time to calculate how long gameplay was
+                    start = time.time()
+
                     result = self.playPatternGame()
 
-                    self.tickTime() # tick the time here
+                    # end time
+                    end = time.time()
+
+                    # deduct time it took them to play the game
+                    elapsed = end - start
+                    self.timeLeft -= int(elapsed)
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -455,9 +463,17 @@ class DavisAfterDark:
                 elif self.gamestate == 3:
                     py.display.set_caption("Nuestro Sweeper")
                     
+                    # start time to calculate how long gameplay was
+                    start = time.time()
+
                     result = self.playMinesweeperGame()
 
-                    self.tickTime() # tick the time here
+                    # end time
+                    end = time.time()
+
+                    # deduct time it took them to play the game
+                    elapsed = end - start
+                    self.timeLeft -= int(elapsed)
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -471,9 +487,17 @@ class DavisAfterDark:
                 elif self.gamestate == 4:
                     py.display.set_caption("Star Game")
                     
+                    # start time to calculate how long gameplay was
+                    start = time.time()
+
                     result = self.playStarGame()
                     
-                    self.tickTime() # tick the time here
+                    # end time
+                    end = time.time()
+
+                    # deduct time it took them to play the game
+                    elapsed = end - start
+                    self.timeLeft -= int(elapsed)                    
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -487,10 +511,18 @@ class DavisAfterDark:
                 # STATE 5 : MATCHING
                 elif self.gamestate == 5:
                     py.display.set_caption("Matching Game")
+
+                    # start time to calculate how long gameplay was
+                    start = time.time()
                                         
                     result = self.playMatchingGame()
                     
-                    self.tickTime() # tick the time here
+                    # end time
+                    end = time.time()
+
+                    # deduct time it took them to play the game
+                    elapsed = end - start
+                    self.timeLeft -= int(elapsed)
 
                     if result == WON_GAME:
                         self.gamesleft -= 1
@@ -505,11 +537,23 @@ class DavisAfterDark:
                 if self.gamestate == 6:
                     py.display.set_caption("Wrong Way Highway")
                     
+                    # start time to calculate how long gameplay was
+                    start = time.time()
+
                     #time in seconds to deduct from overall clock
                     timeToDeduct = self.playHighwayGame() * 5 
+
+                    # end time
+                    end = time.time()
+
+                    # deduct time it took them to play the game
+                    elapsed = end - start
+                    self.timeLeft -= int(elapsed)
+
                     self.timeLeft -= timeToDeduct #decrements by timeToDeduct sec if they lose
                     # self.timeLeft -= 33 #time that the highway game lasts
-                    self.tickTime() # tick the time here
+                    
+
 
                     self.highwayDone = True
                     self.gamesleft -= 1
