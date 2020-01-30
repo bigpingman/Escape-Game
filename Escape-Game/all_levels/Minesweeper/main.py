@@ -92,15 +92,14 @@ def handleFlagging(i, j, board, flagCount):
     if board[i][j]["isFlagged"]:
         board[i][j]["isFlagged"] = False
         return [board, flagCount - 1]
-    elif flagCount < 10:
+    elif flagCount < 7:
         board[i][j]["isFlagged"] = True
         return [board, flagCount + 1]
     else:
         return [board, flagCount]
 
-def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount):
+def handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY):
     for square in rawSquares:
-        [mouseX, mouseY] = pygame.mouse.get_pos()
         squareX = square.x
         squareY = square.y
 
@@ -136,6 +135,7 @@ def playGame4():
     victory = 1
     loss = 0
     result = 2
+    initialClick = True
 
     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
 
@@ -146,15 +146,25 @@ def playGame4():
         # deal with input
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                    [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount)
+                    [mouseX, mouseY] = pygame.mouse.get_pos()
+                    [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
                     if board == None and isBomb == None and squaresLeft == None and flagCount == None:
                         pygame.mouse.set_cursor(*pygame.cursors.arrow)
                         return 2
                     [squares, rawSquares, squareWidth, squareHeight] = draw(screen, board, timeLeft)
                     if isBomb:
-                        gameOver = True
-                        gamestate = loss
-                    elif (squaresLeft - flagCount) == 0 or squaresLeft == 10:
+                        if not initialClick:
+                            gameOver = True 
+                            gamestate = loss
+                        else:
+                            while isBomb:
+                                print("Regen")
+                                board = generateBoard()
+                                [board, isBomb, squaresLeft, flagCount] = handleClick(squares, rawSquares, board, squareWidth, squareHeight, squaresLeft, isFlagging, flagCount, mouseX, mouseY)
+                                initialClick = False
+
+
+                    elif (squaresLeft - flagCount) == 0 or squaresLeft == 7:
                         gameOver = True
 
             if event.type == pygame.KEYDOWN:
@@ -182,7 +192,7 @@ def playGame4():
                 return 1
             
 
-            if (squaresLeft - flagCount) == 0 or squaresLeft == 10:
+            if (squaresLeft - flagCount) == 0 or squaresLeft == 7:
                 pygame.mouse.set_cursor(*pygame.cursors.arrow)
                 return 0
                 

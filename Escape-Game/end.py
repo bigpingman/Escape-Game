@@ -21,7 +21,7 @@ def endScreen(time=300, loser=True):
 	black=(0,0,0)
 	screen.fill(black)
 	pygame.init()
-	font = pygame.font.SysFont("comicsansms", 50)
+	font = pygame.font.SysFont("helvetica", 50)
 
 	#this calls the fixTime function to generate the time value
 	timer=fixTime(time)
@@ -52,28 +52,6 @@ def fixTime(time):
 	finalTime=(timer[0]+"' "+timer[1]+'"')
 	return finalTime
 
-
-
-
-
 if __name__ == "__main__":
 	endScreen()
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-			
-		

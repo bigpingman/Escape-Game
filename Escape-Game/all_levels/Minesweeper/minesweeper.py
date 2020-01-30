@@ -37,7 +37,7 @@ def getNumberOfNearbyBombs(i, j, board):
 
     return count
 
-# we will generate easy boards with 8 x 8 and 10 bombs for now
+# we will generate easy boards with 8 x 8 and 7 bombs for now
 def generateBoard():
     # this n is hardcorded... see above
     n = 8
@@ -48,7 +48,7 @@ def generateBoard():
         board.append([0] * n)
 
     # generate bombs
-    for loc in random.sample(range(0, n * n - 1), 10):
+    for loc in random.sample(range(0, n * n - 1), 7):
         x = loc // n
         y = loc % n
         board[x][y] = -1

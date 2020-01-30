@@ -84,6 +84,8 @@ def pickSquare():
             if mouseX > topLX and mouseX < topLX + sqLen and mouseY > topLY + sqLen*i and mouseY < topLY + sqLen*(i+1): 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     picked = True
+                    pygame.mixer.music.load('./music/Select.wav')
+                    pygame.mixer.music.play(0)
                     return [0,i]
     
         #col 1            
@@ -91,6 +93,8 @@ def pickSquare():
             if mouseX > topLX + sqLen and mouseX < topLX + sqLen*2 and mouseY > topLY + sqLen*i and mouseY < topLY + sqLen*(i+1): 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     picked = True
+                    pygame.mixer.music.load('./music/Select.wav')
+                    pygame.mixer.music.play(0)
                     return [1,i]
     
         #col 2
@@ -98,6 +102,8 @@ def pickSquare():
             if mouseX > topLX + sqLen*2 and mouseX < topLX + sqLen*3 and mouseY > topLY + sqLen*i and mouseY < topLY + sqLen*(i+1):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     picked = True
+                    pygame.mixer.music.load('./music/Select.wav')
+                    pygame.mixer.music.play(0)
                     return [2,i]
     
         #col 3
@@ -105,6 +111,8 @@ def pickSquare():
             if mouseX > topLX + sqLen*3 and mouseX < topLX + sqLen*4 and mouseY > topLY + sqLen*i and mouseY < topLY + sqLen*(i+1):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     picked = True
+                    pygame.mixer.music.load('./music/Select.wav')
+                    pygame.mixer.music.play(0)
                     return [3,i]
 
 #Grid display in terminal for debugging
@@ -281,6 +289,7 @@ def drawClicked(screen, clickedSquares):
 def playGame(screen, grid, numTrue):
 
     while True:
+
         for event in pygame.event.get(20):
                 print(event)
                 if event.type == pygame.QUIT:
@@ -290,7 +299,6 @@ def playGame(screen, grid, numTrue):
         squaresPicked = []
         for i in range(numTrue):
             ps = pickSquare()
-
             
             if ps == 2:
                 return
@@ -336,6 +344,9 @@ def level1Pattern():
     backClicked = False
 
     while quitGame == False:
+
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound('./music/Pattern_theme.wav'))
+
         #draw blank grid
         drawTopBar(screen, 0)
         screen.blit(sky, (0,0))
@@ -371,7 +382,7 @@ def level1Pattern():
         pickText = pickFont.render('Pick 4 squares to recreate the pattern', False, (0, 0, 0))
 
         if gameOver == False:
-            screen.blit(pickText, (60, 615))
+            screen.blit(pickText, (110, 615))
             pygame.display.update()
             
             while failsCounter < 3 and won == False: #plays until a win or three losses
@@ -401,7 +412,7 @@ def level1Pattern():
                         pygame.display.update()
                         
                         #pick 4 
-                        screen.blit(pickText, (60, 615))
+                        screen.blit(pickText, (110, 615))
                         pygame.display.update()
                         
                     else: #no more retries
@@ -417,6 +428,13 @@ def level1Pattern():
                     pygame.display.update()
             
             gameOver = True
+
+        pygame.mixer.stop()
+
+        tEnd = pygame.time.get_ticks()
+
+        #time elapsed in sec
+        tElapsed = (tEnd - t1) / 1000
 
         # return statements: 0 if won, 1 if lost, 2 if exited (back button)
         if (won == True and backClicked == False):
